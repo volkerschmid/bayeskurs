@@ -20,7 +20,9 @@ library(bayeskurs)
 # Bruchpunktmodelle
 ## Bruchpunktmodelle
 
-[//]: Mögliche Erweiterung: Diskrete Markovketten, eventuell Epidemisches Modell zeigen
+<!--  
+Mögliche Erweiterung: Diskrete Markovketten, eventuell Epidemisches Modell zeigen
+-->
 
 * Beim Bruchpunktmodell ändert sich ein Parameter eines Modells an einem Punkt sprungartig
 * In der Regel Anwendung auf Zeitreihen
@@ -36,7 +38,9 @@ Beispiele:
 
 ## Beispiel: Unfälle in englischen Kohlebergwerken {.allowframebreaks}
 
-[//]: Ursprünglicher Autor: Michael Höhle, Daten siehe data(coal, package="boot")
+<!--
+Ursprünglicher Autor: Michael Höhle, Daten siehe data(coal, package="boot")
+-->
 
 Der Datensatz {\texttt coal.txt} enthält die jährliche Anzahl von Unfällen in englischen Kohlebergwerken wärend der Jahre
 1851-1962 (insgesamt 112 Jahre). Ein Plot der Daten zeigt einen
@@ -132,7 +136,6 @@ Dies ist der Kern einer $Ga(16,10+\lambda_1+\lambda_2)$.
 \theta \mid \lambda_1, \lambda_2, \alpha, \mathbf{y}
   &= \exp\big(\theta(\lambda_2-\lambda_1)\big) \exp\left\{\left( \sum_{i=1}^\theta y_i\right) \log\left(\frac{\lambda_1}{\lambda_2}\right)\right\} \\ & \quad\cdot  \text{I}(1\leq \theta \leq 112)
 \end{align*}
-
 
 ## Ergebnisse {.allowframebreaks}
 

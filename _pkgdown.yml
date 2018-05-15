@@ -1,7 +1,21 @@
 template:
   params:
     bootswatch: cerulean
-
+templates:
+  params:
+    bootswatch: cerulean
+    
+navbar:
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Themen"
+      href: articles/index.html
+  right:
+    - text: "Bioimaging Group"
+      href: http://www.bioimg.statistik.uni-muenchen.de
+      
 articles:
 - title: Einführung
   contents:
@@ -26,7 +40,6 @@ articles:
   - Variablenselektion
 - title: Modelle
   contents:
-  - bruchpunktmodelle
   - mischverteilungsmodelle
 - title: Reversible Jump MCMC
   contents:

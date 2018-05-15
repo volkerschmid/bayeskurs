@@ -8,15 +8,18 @@
 <title>Einfaches Samplen • bayeskurs</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Einfaches Samplen">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container template-article">
+      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -24,18 +27,26 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">bayeskurs</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">bayeskurs</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Themen</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="http://www.bioimg.statistik.uni-muenchen.de">Bioimaging Group</a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -45,244 +56,247 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Einfaches Samplen</h1>
                         <h4 class="author">Volker Schmid</h4>
             
             <h4 class="date">May 15, 2017</h4>
-          </div>
+      
+      
+      <div class="hidden name"><code>uebungsimplesamplen.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="einfaches-sampling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#einfaches-sampling" class="anchor"></a>Einfaches Sampling</h2>
 <p>Sei <span class="math inline">\(x_i \sim N(\mu,\tau^{-1})\)</span> mit <span class="math inline">\(\tau=1\)</span> bekannt. Sei <span class="math inline">\(\mu \sim N_{[-1,1]}(0,1)\)</span> und <span class="math inline">\(x={1,0.2,-1.5}\)</span>. Samplen Sie aus der Posteriori mit Acception-Rejection-Methode.</p>
 <p>Posteriori: <span class="math inline">\(\mu|x \sim N_{[-1,1]}(\sum x_i/4,1/4)\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x=<span class="kw">c</span>(<span class="dv">1</span>,<span class="fl">0.2</span>,-<span class="fl">1.5</span>)
-n=<span class="dv">3</span> 
-sumx &lt;-<span class="st"> </span><span class="kw">sum</span>(x)
-unten &lt;-<span class="st"> </span><span class="kw">pnorm</span>(-.<span class="dv">5</span>, sumx/<span class="dv">4</span>, <span class="dt">sd=</span><span class="dv">1</span>/<span class="dv">2</span>)
-oben &lt;-<span class="st"> </span><span class="kw">pnorm</span>(.<span class="dv">5</span>, sumx/<span class="dv">4</span>, <span class="dt">sd=</span><span class="dv">1</span>/<span class="dv">2</span>)
-spanne &lt;-<span class="st"> </span>oben-unten
-xx &lt;-<span class="st"> </span><span class="kw">seq</span>(-.<span class="dv">7</span>,.<span class="dv">7</span>, <span class="dt">by=</span><span class="fl">0.01</span>)
-post&lt;-function(x,sumx,spanne)
-{
-  y&lt;-<span class="kw">dnorm</span>(x, sumx/<span class="dv">4</span>, <span class="dv">1</span>/<span class="dv">2</span>)
-  y &lt;-<span class="st"> </span>y/spanne
-  y[x&lt;<span class="st"> </span>-.<span class="dv">5</span>]&lt;-<span class="dv">0</span>
-  y[x&gt;.<span class="dv">5</span>]&lt;-<span class="dv">0</span>
-  <span class="kw">return</span>(y)
-}
-<span class="kw">plot</span>(xx, <span class="kw">post</span>(xx, sumx, spanne), <span class="dt">type=</span><span class="st">"l"</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">1.7</span>))
-
-factor &lt;-<span class="st"> </span><span class="kw">post</span>(-.<span class="dv">5</span>, sumx, spanne)/<span class="kw">dnorm</span>(-.<span class="dv">5</span>,sumx/<span class="dv">4</span>,<span class="dv">1</span>/<span class="dv">2</span>)
-
-<span class="kw">lines</span>(xx, factor*<span class="kw">dnorm</span>(xx,sumx/<span class="dv">4</span>,<span class="dv">1</span>/<span class="dv">2</span>), <span class="dt">col=</span><span class="st">"blue"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sample &lt;-<span class="st"> </span><span class="kw">c</span>()
-N&lt;-<span class="dv">1000</span>
-while(N!=<span class="dv">0</span>)
-{
-  <span class="kw">cat</span>(<span class="st">"."</span>)
-  prop &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, sumx/<span class="dv">4</span>, <span class="dv">1</span>/<span class="dv">2</span>)
-  alpha &lt;-<span class="st"> </span><span class="kw">post</span>(prop, sumx, spanne)/<span class="kw">dnorm</span>(prop, sumx/<span class="dv">4</span>, <span class="dv">1</span>/<span class="dv">2</span>)/factor
-  u &lt;-<span class="st"> </span><span class="kw">runif</span>(N)
-  sample &lt;-<span class="st"> </span><span class="kw">c</span>(sample, prop[alpha&gt;u])
-  N &lt;-<span class="st"> </span><span class="dv">1000</span>-<span class="kw">length</span>(sample)
-}</code></pre></div>
-<pre><code>## ........</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(sample)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(sample))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-3.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(sample,<span class="dt">breaks =</span> <span class="dv">50</span>, <span class="dt">freq=</span><span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-4.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">draw.from.post&lt;-function(N,mean,sd,<span class="dt">unten=</span>-.<span class="dv">5</span>,<span class="dt">oben=</span>.<span class="dv">5</span>)
-{
-  prop &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, mean, sd)
-  while((<span class="kw">sum</span>(prop&lt;unten)+<span class="kw">sum</span>(prop&gt;oben))!=<span class="dv">0</span>)
-  {
-    prop[prop&lt;unten]&lt;-<span class="kw">rnorm</span>(<span class="kw">sum</span>(prop&lt;unten),mean,sd)
-    prop[prop&gt;oben]&lt;-<span class="kw">rnorm</span>(<span class="kw">sum</span>(prop&gt;oben),mean,sd)
-  }
-  <span class="kw">return</span>(prop)
-}
-sample&lt;-<span class="kw">draw.from.post</span>(<span class="dv">10000</span>,sumx/<span class="dv">4</span>,<span class="dv">1</span>/<span class="dv">2</span>,-.<span class="dv">5</span>,.<span class="dv">5</span>)
-<span class="kw">plot</span>(sample)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-5.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(sample,<span class="dt">breaks =</span> <span class="dv">100</span>, <span class="dt">freq=</span><span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/A-R-6.png" width="672"></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">x=<span class="kw">c</span>(<span class="dv">1</span>,<span class="fl">0.2</span>,<span class="op">-</span><span class="fl">1.5</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">n=<span class="dv">3</span> </a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">sumx &lt;-<span class="st"> </span><span class="kw">sum</span>(x)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">unten &lt;-<span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span>.<span class="dv">5</span>, sumx<span class="op">/</span><span class="dv">4</span>, <span class="dt">sd=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">oben &lt;-<span class="st"> </span><span class="kw">pnorm</span>(.<span class="dv">5</span>, sumx<span class="op">/</span><span class="dv">4</span>, <span class="dt">sd=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">spanne &lt;-<span class="st"> </span>oben<span class="op">-</span>unten</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">xx &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span>.<span class="dv">7</span>,.<span class="dv">7</span>, <span class="dt">by=</span><span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">post&lt;-<span class="cf">function</span>(x,sumx,spanne)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">{</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">  y&lt;-<span class="kw">dnorm</span>(x, sumx<span class="op">/</span><span class="dv">4</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">  y &lt;-<span class="st"> </span>y<span class="op">/</span>spanne</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">  y[x<span class="op">&lt;</span><span class="st"> </span><span class="fl">-.5</span>]&lt;-<span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">  y[x<span class="op">&gt;</span>.<span class="dv">5</span>]&lt;-<span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">  <span class="kw">return</span>(y)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="kw">plot</span>(xx, <span class="kw">post</span>(xx, sumx, spanne), <span class="dt">type=</span><span class="st">"l"</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">1.7</span>))</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">factor &lt;-<span class="st"> </span><span class="kw">post</span>(<span class="op">-</span>.<span class="dv">5</span>, sumx, spanne)<span class="op">/</span><span class="kw">dnorm</span>(<span class="op">-</span>.<span class="dv">5</span>,sumx<span class="op">/</span><span class="dv">4</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="kw">lines</span>(xx, factor<span class="op">*</span><span class="kw">dnorm</span>(xx,sumx<span class="op">/</span><span class="dv">4</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>), <span class="dt">col=</span><span class="st">"blue"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-1.png" width="700"></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">sample &lt;-<span class="st"> </span><span class="kw">c</span>()</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">N&lt;-<span class="dv">1000</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="cf">while</span>(N<span class="op">!=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">{</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="kw">cat</span>(<span class="st">"."</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">  prop &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, sumx<span class="op">/</span><span class="dv">4</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">  alpha &lt;-<span class="st"> </span><span class="kw">post</span>(prop, sumx, spanne)<span class="op">/</span><span class="kw">dnorm</span>(prop, sumx<span class="op">/</span><span class="dv">4</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)<span class="op">/</span>factor</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">  u &lt;-<span class="st"> </span><span class="kw">runif</span>(N)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">  sample &lt;-<span class="st"> </span><span class="kw">c</span>(sample, prop[alpha<span class="op">&gt;</span>u])</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">  N &lt;-<span class="st"> </span><span class="dv">1000</span><span class="op">-</span><span class="kw">length</span>(sample)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">}</a></code></pre></div>
+<pre><code>## .......</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">plot</span>(sample)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-2.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(sample))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-3.png" width="700"></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">hist</span>(sample,<span class="dt">breaks =</span> <span class="dv">50</span>, <span class="dt">freq=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-4.png" width="700"></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">draw.from.post&lt;-<span class="cf">function</span>(N,mean,sd,<span class="dt">unten=</span><span class="op">-</span>.<span class="dv">5</span>,<span class="dt">oben=</span>.<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  prop &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, mean, sd)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="cf">while</span>((<span class="kw">sum</span>(prop<span class="op">&lt;</span>unten)<span class="op">+</span><span class="kw">sum</span>(prop<span class="op">&gt;</span>oben))<span class="op">!=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">  {</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">    prop[prop<span class="op">&lt;</span>unten]&lt;-<span class="kw">rnorm</span>(<span class="kw">sum</span>(prop<span class="op">&lt;</span>unten),mean,sd)</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">    prop[prop<span class="op">&gt;</span>oben]&lt;-<span class="kw">rnorm</span>(<span class="kw">sum</span>(prop<span class="op">&gt;</span>oben),mean,sd)</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="kw">return</span>(prop)</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">sample&lt;-<span class="kw">draw.from.post</span>(<span class="dv">10000</span>,sumx<span class="op">/</span><span class="dv">4</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>,<span class="op">-</span>.<span class="dv">5</span>,.<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="kw">plot</span>(sample)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-5.png" width="700"></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">hist</span>(sample,<span class="dt">breaks =</span> <span class="dv">100</span>, <span class="dt">freq=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/A-R-6.png" width="700"></p>
 </div>
 <div id="gibbs-sampling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#gibbs-sampling" class="anchor"></a>Gibbs-Sampling</h2>
 <p>Sei nun <span class="math inline">\(\tau\sim Ga(1,1/1000)\)</span>. Ziehe aus der gemeinsamen Posteriori von <span class="math inline">\(\$tau\)</span> und <span class="math inline">\(\mu\)</span> mittels Gibbs-Sampling.</p>
 <p>Zuerst mal mit <span class="math inline">\(\mu\sim N(0, 1)\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">I&lt;-<span class="dv">500</span>
-
-s0&lt;-<span class="dv">1</span>
-a&lt;-<span class="dv">1</span>
-b&lt;-<span class="fl">0.001</span>
-n&lt;-<span class="kw">length</span>(x)
-
-mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="dv">+1</span>)
-tau[<span class="dv">1</span>]&lt;-<span class="dv">1000</span>
-mu[<span class="dv">1</span>]&lt;-<span class="dv">1</span>
-
-for (i in (<span class="dv">1</span>:I)+<span class="dv">1</span>)
-{
-  tau[i]&lt;-<span class="kw">rgamma</span>(<span class="dv">1</span>,a+n/<span class="dv">2</span>,b<span class="fl">+0.5</span>*<span class="kw">sum</span>((x-mu[i<span class="dv">-1</span>])^<span class="dv">2</span>))
-  m&lt;-tau[i]*sumx
-  s&lt;-n*tau[i]+<span class="dv">1</span>/s0
-  mu[i]&lt;-<span class="kw">rnorm</span>(<span class="dv">1</span>,m/s,<span class="kw">sqrt</span>(<span class="dv">1</span>/s))
-}
-
-tau&lt;-tau[-<span class="dv">1</span>]
-mu&lt;-mu[-<span class="dv">1</span>]
-
-<span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>/tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-3.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu,tau)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-4.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu[<span class="dv">1</span>:<span class="dv">10</span>],(<span class="dv">1</span>/tau)[<span class="dv">1</span>:<span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-5.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-6.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span>/tau))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-7.png" width="672"></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">I&lt;-<span class="dv">500</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">s0&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">a&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">b&lt;-<span class="fl">0.001</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">n&lt;-<span class="kw">length</span>(x)</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">tau[<span class="dv">1</span>]&lt;-<span class="dv">1000</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">mu[<span class="dv">1</span>]&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="cf">for</span> (i <span class="cf">in</span> (<span class="dv">1</span><span class="op">:</span>I)<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">{</a>
+<a class="sourceLine" id="cb9-14" data-line-number="14">  tau[i]&lt;-<span class="kw">rgamma</span>(<span class="dv">1</span>,a<span class="op">+</span>n<span class="op">/</span><span class="dv">2</span>,b<span class="fl">+0.5</span><span class="op">*</span><span class="kw">sum</span>((x<span class="op">-</span>mu[i<span class="dv">-1</span>])<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb9-15" data-line-number="15">  m&lt;-tau[i]<span class="op">*</span>sumx</a>
+<a class="sourceLine" id="cb9-16" data-line-number="16">  s&lt;-n<span class="op">*</span>tau[i]<span class="op">+</span><span class="dv">1</span><span class="op">/</span>s0</a>
+<a class="sourceLine" id="cb9-17" data-line-number="17">  mu[i]&lt;-<span class="kw">rnorm</span>(<span class="dv">1</span>,m<span class="op">/</span>s,<span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>s))</a>
+<a class="sourceLine" id="cb9-18" data-line-number="18">}</a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb9-20" data-line-number="20">tau&lt;-tau[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb9-21" data-line-number="21">mu&lt;-mu[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb9-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">plot</span>(<span class="dv">1</span><span class="op">/</span>tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-2.png" width="700"></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-3.png" width="700"></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">plot</span>(mu,tau)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-4.png" width="700"></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">plot</span>(mu[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],(<span class="dv">1</span><span class="op">/</span>tau)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-5.png" width="700"></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-6.png" width="700"></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span><span class="op">/</span>tau))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-1-7.png" width="700"></p>
 <p>Jetzt mit beschränkter Priori:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">I&lt;-<span class="dv">500</span>
-
-s0&lt;-<span class="dv">1</span>
-a&lt;-<span class="dv">1</span>
-b&lt;-<span class="fl">0.001</span>
-n&lt;-<span class="kw">length</span>(x)
-
-mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="dv">+1</span>)
-tau[<span class="dv">1</span>]&lt;-<span class="dv">1000</span>
-mu[<span class="dv">1</span>]&lt;-<span class="dv">1</span>
-
-for (i in (<span class="dv">1</span>:I)+<span class="dv">1</span>)
-{
-  tau[i]&lt;-<span class="kw">rgamma</span>(<span class="dv">1</span>,a+n/<span class="dv">2</span>,b<span class="fl">+0.5</span>*<span class="kw">sum</span>((x-mu[i<span class="dv">-1</span>])^<span class="dv">2</span>))
-  m&lt;-tau[i]*sumx
-  s&lt;-n*tau[i]+<span class="dv">1</span>/s0
-  mu[i]&lt;-<span class="kw">draw.from.post</span>(<span class="dv">1</span>,m/s,<span class="kw">sqrt</span>(<span class="dv">1</span>/s))
-}
-
-tau&lt;-tau[-<span class="dv">1</span>]
-mu&lt;-mu[-<span class="dv">1</span>]
-
-<span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>/tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-3.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu,tau)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-4.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu[<span class="dv">1</span>:<span class="dv">10</span>],(<span class="dv">1</span>/tau)[<span class="dv">1</span>:<span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-5.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-6.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span>/tau))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-7.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(mu,<span class="dt">breaks=</span><span class="dv">100</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-8.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">mean</span>(mu))</code></pre></div>
-<pre><code>## [1] -0.02938018</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">mean</span>(tau))</code></pre></div>
-<pre><code>## [1] 1.446763</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">I&lt;-<span class="dv">500</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">s0&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">a&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">b&lt;-<span class="fl">0.001</span></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">n&lt;-<span class="kw">length</span>(x)</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9">tau[<span class="dv">1</span>]&lt;-<span class="dv">1000</span></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">mu[<span class="dv">1</span>]&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb16-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="cf">for</span> (i <span class="cf">in</span> (<span class="dv">1</span><span class="op">:</span>I)<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb16-13" data-line-number="13">{</a>
+<a class="sourceLine" id="cb16-14" data-line-number="14">  tau[i]&lt;-<span class="kw">rgamma</span>(<span class="dv">1</span>,a<span class="op">+</span>n<span class="op">/</span><span class="dv">2</span>,b<span class="fl">+0.5</span><span class="op">*</span><span class="kw">sum</span>((x<span class="op">-</span>mu[i<span class="dv">-1</span>])<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb16-15" data-line-number="15">  m&lt;-tau[i]<span class="op">*</span>sumx</a>
+<a class="sourceLine" id="cb16-16" data-line-number="16">  s&lt;-n<span class="op">*</span>tau[i]<span class="op">+</span><span class="dv">1</span><span class="op">/</span>s0</a>
+<a class="sourceLine" id="cb16-17" data-line-number="17">  mu[i]&lt;-<span class="kw">draw.from.post</span>(<span class="dv">1</span>,m<span class="op">/</span>s,<span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>s))</a>
+<a class="sourceLine" id="cb16-18" data-line-number="18">}</a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb16-20" data-line-number="20">tau&lt;-tau[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb16-21" data-line-number="21">mu&lt;-mu[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb16-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb16-23" data-line-number="23"><span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">plot</span>(<span class="dv">1</span><span class="op">/</span>tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-2.png" width="700"></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-3.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">plot</span>(mu,tau)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-4.png" width="700"></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">plot</span>(mu[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],(<span class="dv">1</span><span class="op">/</span>tau)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-5.png" width="700"></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-6.png" width="700"></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span><span class="op">/</span>tau))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-7.png" width="700"></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">hist</span>(mu,<span class="dt">breaks=</span><span class="dv">100</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-2-8.png" width="700"></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">mean</span>(mu))</a></code></pre></div>
+<pre><code>## [1] 0.006729843</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">mean</span>(tau))</a></code></pre></div>
+<pre><code>## [1] 1.428608</code></pre>
 </div>
 <div id="metropolis-hastings-sampling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#metropolis-hastings-sampling" class="anchor"></a>Metropolis-Hastings-Sampling</h2>
 <p>Sei nun <span class="math inline">\(\tau \sim LN(0,1)\)</span>. Ziehe aus der gemeinsamen Posteriori mittels Metropolis_Hastings.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">I&lt;-<span class="dv">500</span>
-
-s0&lt;-<span class="dv">1</span>
-a&lt;-<span class="dv">5</span>
-b&lt;-<span class="dv">1</span>
-n&lt;-<span class="kw">length</span>(x)
-
-mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="dv">+1</span>)
-tau[<span class="dv">1</span>]&lt;-<span class="dv">1</span> <span class="co"># !</span>
-mu[<span class="dv">1</span>]&lt;-.<span class="dv">1</span> <span class="co"># !</span>
-
-log.fc.tau &lt;-<span class="st"> </span>function(tau,n,sumxmu2)
-{
-  if (tau&lt;<span class="dv">0</span>|tau&gt;<span class="dv">1</span>)<span class="kw">return</span>(<span class="dv">0</span>)
-  return&lt;-n*<span class="kw">log</span>(tau)/<span class="dv">2</span>-tau*sumxmu2/<span class="dv">2</span>+<span class="kw">log</span>(<span class="kw">dlnorm</span>(tau))
-  <span class="kw">return</span>(return)
-}</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (i in (<span class="dv">1</span>:I)+<span class="dv">1</span>)
-{
-  taustern &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>,tau[i<span class="dv">-1</span>],.<span class="dv">1</span>)
-  sumxmu2&lt;-<span class="kw">sum</span>((x-mu[i<span class="dv">-1</span>])^<span class="dv">2</span>)
-  logalpha&lt;-<span class="kw">log.fc.tau</span>(taustern,n,sumxmu2)-<span class="kw">log.fc.tau</span>(tau[i<span class="dv">-1</span>],n,sumxmu2)
-  alpha&lt;-<span class="kw">exp</span>(logalpha)
-  if (<span class="kw">runif</span>(<span class="dv">1</span>)&lt;alpha)
-  {
-    tau[i]&lt;-taustern
-  }
-  else
-  {
-     tau[i]&lt;-tau[i<span class="dv">-1</span>]
-  }
-  
-  m&lt;-tau[i]*sumx
-  s&lt;-n*tau[i]+<span class="dv">1</span>/s0
-  mustern&lt;-<span class="kw">rnorm</span>(<span class="dv">1</span>,m/s,<span class="kw">sqrt</span>(<span class="dv">1</span>/s))
-  logalpha &lt;-<span class="st"> </span><span class="kw">log</span>(<span class="kw">post</span>(mustern,sumx,spanne))-<span class="kw">log</span>(<span class="kw">post</span>(mu[i<span class="dv">-1</span>],sumx,spanne))
-  logalpha &lt;-<span class="st"> </span>logalpha+<span class="kw">log</span>(<span class="kw">dnorm</span>(mu[i<span class="dv">-1</span>],m/s,<span class="kw">sqrt</span>(<span class="dv">1</span>/s)))-<span class="kw">log</span>(<span class="kw">dnorm</span>(mustern,m/s,<span class="kw">sqrt</span>(<span class="dv">1</span>/s)))
- alpha&lt;-<span class="kw">exp</span>(logalpha)
- if(!<span class="kw">is.na</span>(alpha))if(!<span class="kw">is.na</span>(mustern))
-   if (<span class="kw">runif</span>(<span class="dv">1</span>)&lt;alpha)
-  {
-    mu[i]&lt;-mustern
-  }
-  else
-  {
-    mu[i]&lt;-mu[i<span class="dv">-1</span>]
-  }
-}</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tau&lt;-tau[-<span class="dv">1</span>]
-mu&lt;-mu[-<span class="dv">1</span>]
-
-<span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>/tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-2.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-3.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu,tau)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-4.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(mu[<span class="dv">1</span>:<span class="dv">10</span>],(<span class="dv">1</span>/tau)[<span class="dv">1</span>:<span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-5.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-6.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span>/tau))</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-7.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(mu,<span class="dt">breaks=</span><span class="dv">100</span>)</code></pre></div>
-<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-8.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">mean</span>(mu))</code></pre></div>
-<pre><code>## [1] -0.03877894</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">mean</span>(tau))</code></pre></div>
-<pre><code>## [1] 2.359635</code></pre>
-</div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">I&lt;-<span class="dv">500</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">s0&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">a&lt;-<span class="dv">5</span></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">b&lt;-<span class="dv">1</span></a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">n&lt;-<span class="kw">length</span>(x)</a>
+<a class="sourceLine" id="cb28-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb28-8" data-line-number="8">mu&lt;-tau&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,I<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb28-9" data-line-number="9">tau[<span class="dv">1</span>]&lt;-<span class="dv">1</span> <span class="co"># !</span></a>
+<a class="sourceLine" id="cb28-10" data-line-number="10">mu[<span class="dv">1</span>]&lt;-.<span class="dv">1</span> <span class="co"># !</span></a>
+<a class="sourceLine" id="cb28-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb28-12" data-line-number="12">log.fc.tau &lt;-<span class="st"> </span><span class="cf">function</span>(tau,n,sumxmu2)</a>
+<a class="sourceLine" id="cb28-13" data-line-number="13">{</a>
+<a class="sourceLine" id="cb28-14" data-line-number="14">  <span class="cf">if</span> (tau<span class="op">&lt;</span><span class="dv">0</span><span class="op">|</span>tau<span class="op">&gt;</span><span class="dv">1</span>)<span class="kw">return</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb28-15" data-line-number="15">  return&lt;-n<span class="op">*</span><span class="kw">log</span>(tau)<span class="op">/</span><span class="dv">2</span><span class="op">-</span>tau<span class="op">*</span>sumxmu2<span class="op">/</span><span class="dv">2</span><span class="op">+</span><span class="kw">log</span>(<span class="kw">dlnorm</span>(tau))</a>
+<a class="sourceLine" id="cb28-16" data-line-number="16">  <span class="kw">return</span>(return)</a>
+<a class="sourceLine" id="cb28-17" data-line-number="17">}</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> (<span class="dv">1</span><span class="op">:</span>I)<span class="op">+</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">  taustern &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>,tau[i<span class="dv">-1</span>],.<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">  sumxmu2&lt;-<span class="kw">sum</span>((x<span class="op">-</span>mu[i<span class="dv">-1</span>])<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">  logalpha&lt;-<span class="kw">log.fc.tau</span>(taustern,n,sumxmu2)<span class="op">-</span><span class="kw">log.fc.tau</span>(tau[i<span class="dv">-1</span>],n,sumxmu2)</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">  alpha&lt;-<span class="kw">exp</span>(logalpha)</a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">  <span class="cf">if</span> (<span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">&lt;</span>alpha)</a>
+<a class="sourceLine" id="cb29-8" data-line-number="8">  {</a>
+<a class="sourceLine" id="cb29-9" data-line-number="9">    tau[i]&lt;-taustern</a>
+<a class="sourceLine" id="cb29-10" data-line-number="10">  }</a>
+<a class="sourceLine" id="cb29-11" data-line-number="11">  <span class="cf">else</span></a>
+<a class="sourceLine" id="cb29-12" data-line-number="12">  {</a>
+<a class="sourceLine" id="cb29-13" data-line-number="13">     tau[i]&lt;-tau[i<span class="dv">-1</span>]</a>
+<a class="sourceLine" id="cb29-14" data-line-number="14">  }</a>
+<a class="sourceLine" id="cb29-15" data-line-number="15">  </a>
+<a class="sourceLine" id="cb29-16" data-line-number="16">  m&lt;-tau[i]<span class="op">*</span>sumx</a>
+<a class="sourceLine" id="cb29-17" data-line-number="17">  s&lt;-n<span class="op">*</span>tau[i]<span class="op">+</span><span class="dv">1</span><span class="op">/</span>s0</a>
+<a class="sourceLine" id="cb29-18" data-line-number="18">  mustern&lt;-<span class="kw">rnorm</span>(<span class="dv">1</span>,m<span class="op">/</span>s,<span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>s))</a>
+<a class="sourceLine" id="cb29-19" data-line-number="19">  logalpha &lt;-<span class="st"> </span><span class="kw">log</span>(<span class="kw">post</span>(mustern,sumx,spanne))<span class="op">-</span><span class="kw">log</span>(<span class="kw">post</span>(mu[i<span class="dv">-1</span>],sumx,spanne))</a>
+<a class="sourceLine" id="cb29-20" data-line-number="20">  logalpha &lt;-<span class="st"> </span>logalpha<span class="op">+</span><span class="kw">log</span>(<span class="kw">dnorm</span>(mu[i<span class="dv">-1</span>],m<span class="op">/</span>s,<span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>s)))<span class="op">-</span><span class="kw">log</span>(<span class="kw">dnorm</span>(mustern,m<span class="op">/</span>s,<span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>s)))</a>
+<a class="sourceLine" id="cb29-21" data-line-number="21"> alpha&lt;-<span class="kw">exp</span>(logalpha)</a>
+<a class="sourceLine" id="cb29-22" data-line-number="22"> <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(alpha))<span class="cf">if</span>(<span class="op">!</span><span class="kw">is.na</span>(mustern))</a>
+<a class="sourceLine" id="cb29-23" data-line-number="23">   <span class="cf">if</span> (<span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">&lt;</span>alpha)</a>
+<a class="sourceLine" id="cb29-24" data-line-number="24">  {</a>
+<a class="sourceLine" id="cb29-25" data-line-number="25">    mu[i]&lt;-mustern</a>
+<a class="sourceLine" id="cb29-26" data-line-number="26">  }</a>
+<a class="sourceLine" id="cb29-27" data-line-number="27">  <span class="cf">else</span></a>
+<a class="sourceLine" id="cb29-28" data-line-number="28">  {</a>
+<a class="sourceLine" id="cb29-29" data-line-number="29">    mu[i]&lt;-mu[i<span class="dv">-1</span>]</a>
+<a class="sourceLine" id="cb29-30" data-line-number="30">  }</a>
+<a class="sourceLine" id="cb29-31" data-line-number="31">}</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">tau&lt;-tau[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">mu&lt;-mu[<span class="op">-</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="kw">plot</span>(mu,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">plot</span>(<span class="dv">1</span><span class="op">/</span>tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">plot</span>(tau,<span class="dt">type=</span><span class="st">"l"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-3.png" width="700"></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">plot</span>(mu,tau)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-4.png" width="700"></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">plot</span>(mu[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],(<span class="dv">1</span><span class="op">/</span>tau)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>],<span class="dt">type=</span><span class="st">"s"</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-5.png" width="700"></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(mu))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-6.png" width="700"></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">density</span>(<span class="dv">1</span><span class="op">/</span>tau))</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-7.png" width="700"></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">hist</span>(mu,<span class="dt">breaks=</span><span class="dv">100</span>)</a></code></pre></div>
+<p><img src="uebungsimplesamplen_files/figure-html/unnamed-chunk-4-8.png" width="700"></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">mean</span>(mu))</a></code></pre></div>
+<pre><code>## [1] -0.06062104</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">mean</span>(tau))</a></code></pre></div>
+<pre><code>## [1] 2.255383</code></pre>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#einfaches-sampling">Einfaches Sampling</a></li>
       <li><a href="#gibbs-sampling">Gibbs-Sampling</a></li>
@@ -299,11 +313,13 @@ mu&lt;-mu[-<span class="dv">1</span>]
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

@@ -18,10 +18,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #  Thomas Bayes  {.allowframebreaks} 
 
-!(pics/Thomas_Bayes.png)
+![](pics/Thomas_Bayes.png)
 Einziges Bild, vermutlich nicht authentisch}
 
-!(pics/Image028.jpg)
+![](pics/Image028.jpg)
 
 ## Thomas Bayes
 

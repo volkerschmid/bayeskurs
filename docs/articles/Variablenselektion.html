@@ -8,15 +8,18 @@
 <title>Bayesianische Variablenselektion • bayeskurs</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Bayesianische Variablenselektion">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container template-article">
+      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -24,18 +27,26 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">bayeskurs</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">bayeskurs</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Themen</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="http://www.bioimg.statistik.uni-muenchen.de">Bioimaging Group</a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -45,19 +56,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Bayesianische Variablenselektion</h1>
                         <h4 class="author">Volker Schmid</h4>
             
-            <h4 class="date"><ol start="10" style="list-style-type: decimal">
-<li>Juli 2017</li>
-</ol></h4>
-          </div>
+            <h4 class="date">10. Juli 2017</h4>
+      
+      
+      <div class="hidden name"><code>Variablenselektion.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="ridge-und-lasso" class="section level1">
 <h1 class="hasAnchor">
 <a href="#ridge-und-lasso" class="anchor"></a>Ridge und Lasso</h1>
@@ -97,17 +109,17 @@ y_i|\beta,\sigma^2 &amp; \sim {\rm N}(\mu_i,\sigma^2)\\
 <h2 class="hasAnchor">
 <a href="#beispiel-bayesianische-ridge-regression" class="anchor"></a>Beispiel Bayesianische Ridge-Regression</h2>
 <p>Wir konstruieren einen Beispieldatensatz</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">50</span> 
-p &lt;-<span class="st"> </span><span class="dv">100</span>
-true.sigma2 &lt;-<span class="st"> </span><span class="fl">0.001</span>
-x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(n*p), <span class="dt">nrow=</span>n)
-true.beta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>, <span class="kw">rep</span>(<span class="dv">0</span>,p<span class="dv">-3</span>))
-mu &lt;-<span class="st"> </span><span class="kw">as.vector</span>(x%*%true.beta)
-y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n,mu,<span class="kw">sqrt</span>(true.sigma2))
-<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))
-for (i in <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">4</span>,<span class="dv">10</span>,<span class="dv">90</span>))
-  <span class="kw">plot</span>(x[,i],y)</code></pre></div>
-<p><img src="Variablenselektion_files/figure-html/ridge-daten-1.png" width="672"></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="dv">50</span> </a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">p &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">true.sigma2 &lt;-<span class="st"> </span><span class="fl">0.001</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(n<span class="op">*</span>p), <span class="dt">nrow=</span>n)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">true.beta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>, <span class="kw">rep</span>(<span class="dv">0</span>,p<span class="dv">-3</span>))</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">mu &lt;-<span class="st"> </span><span class="kw">as.vector</span>(x<span class="op">%*%</span>true.beta)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n,mu,<span class="kw">sqrt</span>(true.sigma2))</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>,<span class="dv">10</span>,<span class="dv">90</span>))</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">  <span class="kw">plot</span>(x[,i],y)</a></code></pre></div>
+<p><img src="Variablenselektion_files/figure-html/ridge-daten-1.png" width="700"></p>
 </div>
 <div id="posteriori" class="section level2">
 <h2 class="hasAnchor">
@@ -131,55 +143,55 @@ p(\beta,\tau,\sigma^2|y) &amp;\propto \sigma^{-n}\exp\left(-\frac{1}{2\sigma^2}\
 <div id="mmcm" class="section level2 allowframebreaks">
 <h2 class="hasAnchor">
 <a href="#mmcm" class="anchor"></a>MMCM</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta&lt;-<span class="kw">rep</span>(<span class="dv">0</span>,p)
-XX &lt;-<span class="st"> </span><span class="kw">t</span>(x)%*%x
-Xy &lt;-<span class="st"> </span><span class="kw">t</span>(x)%*%y
-tau &lt;-<span class="st"> </span><span class="dv">1</span>
-sigma2 &lt;-<span class="st"> </span><span class="dv">1</span>
-a0 &lt;-<span class="st"> </span><span class="dv">1</span>
-b0 &lt;-<span class="st"> </span><span class="fl">0.001</span>
-a &lt;-<span class="st"> </span><span class="dv">1</span>
-b &lt;-<span class="st"> </span><span class="fl">0.1</span>
-
-beta.save&lt;-<span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p,<span class="dv">500</span>))
-tau.save&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">500</span>)
-sigma2.save&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">500</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="dv">1000</span>)
-{
-  Sigma &lt;-<span class="st"> </span><span class="kw">solve</span>(XX+tau*<span class="kw">diag</span>(p))
-  mu &lt;-<span class="st"> </span>Sigma%*%Xy
-  beta &lt;-<span class="st"> </span>mnormt::<span class="kw">rmnorm</span>(<span class="dv">1</span>,mu,Sigma)
-  
-  tau &lt;-<span class="st"> </span><span class="kw">rgamma</span>(<span class="dv">1</span>, a+p/<span class="dv">2</span>, b+<span class="kw">sum</span>(beta^<span class="dv">2</span>)/<span class="dv">2</span>)
-
-  sigma2 &lt;-<span class="st"> </span><span class="dv">1</span>/<span class="kw">rgamma</span>(<span class="dv">1</span>, a0+n/<span class="dv">2</span>, b0+<span class="kw">sum</span>((y-x%*%beta)^<span class="dv">2</span>))
-  
-  if (i&gt;<span class="dv">500</span>)
-  {
-    beta.save[,i<span class="dv">-500</span>]=beta
-    tau.save[i<span class="dv">-500</span>]=tau
-    sigma2.save[i<span class="dv">-500</span>]=sigma2
-  }
-}</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">beta&lt;-<span class="kw">rep</span>(<span class="dv">0</span>,p)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">XX &lt;-<span class="st"> </span><span class="kw">t</span>(x)<span class="op">%*%</span>x</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">Xy &lt;-<span class="st"> </span><span class="kw">t</span>(x)<span class="op">%*%</span>y</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">tau &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">sigma2 &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">a0 &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">b0 &lt;-<span class="st"> </span><span class="fl">0.001</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">a &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">b &lt;-<span class="st"> </span><span class="fl">0.1</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">beta.save&lt;-<span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p,<span class="dv">500</span>))</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">tau.save&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">sigma2.save&lt;-<span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">500</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">  Sigma &lt;-<span class="st"> </span><span class="kw">solve</span>(XX<span class="op">+</span>tau<span class="op">*</span><span class="kw">diag</span>(p))</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">  mu &lt;-<span class="st"> </span>Sigma<span class="op">%*%</span>Xy</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">  beta &lt;-<span class="st"> </span>mnormt<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/mnormt/topics/dmnorm">rmnorm</a></span>(<span class="dv">1</span>,mu,Sigma)</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">  </a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">  tau &lt;-<span class="st"> </span><span class="kw">rgamma</span>(<span class="dv">1</span>, a<span class="op">+</span>p<span class="op">/</span><span class="dv">2</span>, b<span class="op">+</span><span class="kw">sum</span>(beta<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">  sigma2 &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="kw">rgamma</span>(<span class="dv">1</span>, a0<span class="op">+</span>n<span class="op">/</span><span class="dv">2</span>, b0<span class="op">+</span><span class="kw">sum</span>((y<span class="op">-</span>x<span class="op">%*%</span>beta)<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">  <span class="cf">if</span> (i<span class="op">&gt;</span><span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">  {</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">    beta.save[,i<span class="dv">-500</span>]=beta</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">    tau.save[i<span class="dv">-500</span>]=tau</a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">    sigma2.save[i<span class="dv">-500</span>]=sigma2</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">  }</a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">}</a></code></pre></div>
 </div>
 <div id="plot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot" class="anchor"></a>Plot</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta.qu&lt;-<span class="kw">apply</span>(beta.save,<span class="dv">1</span>,quantile,<span class="dt">probs=</span><span class="kw">c</span>(.<span class="dv">05</span>,.<span class="dv">5</span>,.<span class="dv">95</span>))
-<span class="kw">plot</span>(beta.qu[<span class="dv">2</span>,],<span class="dt">pch=</span><span class="dv">19</span>,<span class="dt">ylim=</span><span class="kw">range</span>(beta.qu),<span class="dt">ylab=</span><span class="st">"beta"</span>)
-for (i in <span class="dv">1</span>:p)
-<span class="kw">lines</span>(<span class="kw">rep</span>(i,<span class="dv">2</span>),beta.qu[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>),i],<span class="dt">lwd=</span><span class="dv">2</span>)</code></pre></div>
-<p><img src="Variablenselektion_files/figure-html/ridge-plot-1.png" width="672"></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">beta.qu&lt;-<span class="kw">apply</span>(beta.save,<span class="dv">1</span>,quantile,<span class="dt">probs=</span><span class="kw">c</span>(.<span class="dv">05</span>,.<span class="dv">5</span>,.<span class="dv">95</span>))</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">plot</span>(beta.qu[<span class="dv">2</span>,],<span class="dt">pch=</span><span class="dv">19</span>,<span class="dt">ylim=</span><span class="kw">range</span>(beta.qu),<span class="dt">ylab=</span><span class="st">"beta"</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">lines</span>(<span class="kw">rep</span>(i,<span class="dv">2</span>),beta.qu[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>),i],<span class="dt">lwd=</span><span class="dv">2</span>)</a></code></pre></div>
+<p><img src="Variablenselektion_files/figure-html/ridge-plot-1.png" width="700"></p>
 </div>
 <div id="relevante-kovariablen" class="section level2">
 <h2 class="hasAnchor">
 <a href="#relevante-kovariablen" class="anchor"></a>Relevante Kovariablen</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(beta.qu[<span class="dv">2</span>,]==<span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">sum</span>(beta.qu[<span class="dv">2</span>,]<span class="op">==</span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">which</span>(beta.qu[<span class="dv">1</span>,]&gt;<span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1]  1  2  3 87</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">which</span>(beta.qu[<span class="dv">3</span>,]&lt;<span class="dv">0</span>))</code></pre></div>
-<pre><code>## integer(0)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">which</span>(beta.qu[<span class="dv">1</span>,]<span class="op">&gt;</span><span class="dv">0</span>))</a></code></pre></div>
+<pre><code>## [1]  1  2  3 45</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">which</span>(beta.qu[<span class="dv">3</span>,]<span class="op">&lt;</span><span class="dv">0</span>))</a></code></pre></div>
+<pre><code>## [1] 93</code></pre>
 <ul>
 <li>Bei Ridge werden die Parameter Richtung Null gedrückt</li>
 <li>Aber: Parameter werden nicht genau gleich Null!</li>
@@ -207,7 +219,7 @@ for (i in <span class="dv">1</span>:p)
 \lambda^2 &amp;\sim Ga(a,b)
 \end{aligned} \]</span></p>
 <p>Damit läßt sich wiederum ein Gibbs-Sampler konstruieren.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta.L&lt;-<span class="kw"><a href="../reference/gibbsBLasso.html">gibbsBLasso</a></span>(x, y, <span class="dt">max.steps =</span> <span class="dv">10000</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">beta.L&lt;-<span class="kw"><a href="../reference/gibbsBLasso.html">gibbsBLasso</a></span>(x, y, <span class="dt">max.steps =</span> <span class="dv">10000</span>)</a></code></pre></div>
 <pre><code>## Iteration: 1000 
 Iteration: 2000 
 Iteration: 3000 
@@ -218,16 +230,16 @@ Iteration: 7000
 Iteration: 8000 
 Iteration: 9000 
 Iteration: 10000 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(beta.L[<span class="dv">2</span>,],<span class="dt">pch=</span><span class="dv">19</span>,<span class="dt">ylim=</span><span class="kw">range</span>(beta.L),<span class="dt">ylab=</span><span class="st">"beta"</span>)
-for (i in <span class="dv">1</span>:p)
-<span class="kw">lines</span>(<span class="kw">rep</span>(i,<span class="dv">2</span>),beta.L[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>),i],<span class="dt">lwd=</span><span class="dv">2</span>)</code></pre></div>
-<p><img src="Variablenselektion_files/figure-html/lasso-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(beta.L[<span class="dv">2</span>,]==<span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">plot</span>(beta.L[<span class="dv">2</span>,],<span class="dt">pch=</span><span class="dv">19</span>,<span class="dt">ylim=</span><span class="kw">range</span>(beta.L),<span class="dt">ylab=</span><span class="st">"beta"</span>)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">lines</span>(<span class="kw">rep</span>(i,<span class="dv">2</span>),beta.L[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>),i],<span class="dt">lwd=</span><span class="dv">2</span>)</a></code></pre></div>
+<p><img src="Variablenselektion_files/figure-html/lasso-1.png" width="700"></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">sum</span>(beta.L[<span class="dv">2</span>,]<span class="op">==</span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">which</span>(beta.L[<span class="dv">1</span>,]&gt;<span class="dv">0</span>))</code></pre></div>
-<pre><code>##  [1]   1   2   3   5  11  17  24  25  29  33  36  37  43  44  45  47  59
-## [18]  60  61  63  73  81  82  83  84  85  90  94 100</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">which</span>(beta.L[<span class="dv">3</span>,]&lt;<span class="dv">0</span>))</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">which</span>(beta.L[<span class="dv">1</span>,]<span class="op">&gt;</span><span class="dv">0</span>))</a></code></pre></div>
+<pre><code>##  [1]  1  2  3  8  9 10 11 12 15 20 21 22 24 25 27 28 34 37 39 45 46 48 51
+## [24] 53 55 59 62 70 73 74 76 77 87 97</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">which</span>(beta.L[<span class="dv">3</span>,]<span class="op">&lt;</span><span class="dv">0</span>))</a></code></pre></div>
 <pre><code>## integer(0)</code></pre>
 </div>
 <div id="elastic-net" class="section level2">
@@ -235,7 +247,7 @@ for (i in <span class="dv">1</span>:p)
 <a href="#elastic-net" class="anchor"></a>Elastic Net</h2>
 <p>Ridge und Lasso lassen sich kombinieren:</p>
 <p><span class="math display">\[ p(\beta_j) \propto \exp\left(-\frac{\tau}{2} \sum |\beta_j| -\frac{\nu}{2} \sum \beta_j^2 \right)\]</span></p>
-<p><img src="Variablenselektion_files/figure-html/priorplot-1.png" width="672"></p>
+<p><img src="Variablenselektion_files/figure-html/priorplot-1.png" width="700"></p>
 </div>
 </div>
 <div id="indikatorvariablen" class="section level1">
@@ -284,7 +296,7 @@ for (i in <span class="dv">1</span>:p)
 </li>
 <li>Computational bessere Darstellung als Mischung von zwei Normalverteilungen mit sehr großer uns sehr kleiner Varianz</li>
 </ul>
-<p><img src="Variablenselektion_files/figure-html/spikeslabplot-1.png" width="672"></p>
+<p><img src="Variablenselektion_files/figure-html/spikeslabplot-1.png" width="700"></p>
 <ul>
 <li>Änhlichkeiten zu Elastic Net, wenn Lasso über Normalverteilung modelliert wird.</li>
 <li>z.B. Implementation in spikeSlabGAM-Paker</li>
@@ -324,12 +336,12 @@ w&amp;\sim Beta(a_w, b_w)
 ## Arguments 'widths' &amp; 'heights' can still be defined and are handed over
 ##   to &lt;gridExtra:::marrangeGrob&gt;.
 ## Sorry for the inconvenience.</code></pre>
-<p><img src="Variablenselektion_files/figure-html/spikeslabgam-data-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mcmc &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">nChains=</span><span class="dv">4</span>, <span class="dt">chainLength=</span><span class="dv">1000</span>, <span class="dt">burnin=</span><span class="dv">500</span>, <span class="dt">thin=</span><span class="dv">5</span>)
-m0 &lt;-<span class="st"> </span><span class="kw">spikeSlabGAM</span>(diabetes ~<span class="st"> </span>pregnant +<span class="st"> </span>glucose +<span class="st"> </span>pressure +<span class="st"> </span>mass +<span class="st"> </span>pedigree +<span class="st"> </span>age,
-        <span class="dt">family=</span><span class="st">"binomial"</span>, <span class="dt">data=</span>pimaDiabTrain, <span class="dt">mcmc=</span>mcmc)</code></pre></div>
+<p><img src="Variablenselektion_files/figure-html/spikeslabgam-data-1.png" width="700"></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">mcmc &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">nChains=</span><span class="dv">4</span>, <span class="dt">chainLength=</span><span class="dv">1000</span>, <span class="dt">burnin=</span><span class="dv">500</span>, <span class="dt">thin=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">m0 &lt;-<span class="st"> </span><span class="kw">spikeSlabGAM</span>(diabetes <span class="op">~</span><span class="st"> </span>pregnant <span class="op">+</span><span class="st"> </span>glucose <span class="op">+</span><span class="st"> </span>pressure <span class="op">+</span><span class="st"> </span>mass <span class="op">+</span><span class="st"> </span>pedigree <span class="op">+</span><span class="st"> </span>age,</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">        <span class="dt">family=</span><span class="st">"binomial"</span>, <span class="dt">data=</span>pimaDiabTrain, <span class="dt">mcmc=</span>mcmc)</a></code></pre></div>
 <pre><code>## 
-## Model has  58  coefficients in  13 model terms.
+## Model has  57  coefficients in  13 model terms.
 ## Blockwise sampling: alpha: 3  block(s); xi: 5 block(s).</code></pre>
 <pre><code>## Using 2 parallel processes.
 ## Use 'options(mc.cores = &lt;YourNumberHere&gt;)' to override next time.</code></pre>
@@ -339,15 +351,15 @@ m0 &lt;-<span class="st"> </span><span class="kw">spikeSlabGAM</span>(diabetes ~
 ## 
 ## Mean acceptance rates:
 ## alpha   ksi 
-##  0.93  0.63</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">summary</span>(m0), <span class="dt">printModels=</span><span class="ot">FALSE</span>)</code></pre></div>
+##  0.93  0.64</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">print</span>(<span class="kw">summary</span>(m0), <span class="dt">printModels=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## Spike-and-Slab STAR for Binomial data 
 ## 
 ## Model:
 ## diabetes ~ (lin(pregnant) + sm(pregnant)) + (lin(glucose) + sm(glucose)) + 
 ##     (lin(pressure) + sm(pressure)) + (lin(mass) + sm(mass)) + 
 ##     (lin(pedigree) + sm(pedigree)) + (lin(age) + sm(age))
-## 524 observations; 58 coefficients in 13 model terms.
+## 524 observations; 57 coefficients in 13 model terms.
 ## 
 ## Prior:
 ##  a[tau]  b[tau]    v[0]    a[w]    b[w] 
@@ -356,35 +368,35 @@ m0 &lt;-<span class="st"> </span><span class="kw">spikeSlabGAM</span>(diabetes ~
 ## MCMC:
 ## Saved 4000 samples from 4 chain(s), each ran 5000 iterations after a
 ##   burn-in of 500 ; Thinning: 5
-## P-IWLS acceptance rates: 0.93 for alpha; 0.63 for xi.
+## P-IWLS acceptance rates: 0.93 for alpha; 0.64 for xi.
 ##                             
-## Null deviance:           674
-## Mean posterior deviance: 448
+## Null deviance:           672
+## Mean posterior deviance: 500
 ## 
 ## Marginal posterior inclusion probabilities and term importance:
-##               P(gamma = 1)     pi dim    
-## u                       NA     NA   1    
-## lin(pregnant)        0.688  0.057   1  **
-## sm(pregnant)         0.196  0.001   8    
-## lin(glucose)         1.000  0.640   1 ***
-## sm(glucose)          0.013  0.000   9    
-## lin(pressure)        0.015  0.000   1    
-## sm(pressure)         0.018  0.000   9    
-## lin(mass)            1.000  0.187   1 ***
-## sm(mass)             0.220  0.009   9    
-## lin(pedigree)        0.349  0.011   1   *
-## sm(pedigree)         0.229 -0.002   8    
-## lin(age)             0.269  0.023   1   *
-## sm(age)              1.000  0.074   8 ***
+##               P(gamma = 1)    pi dim    
+## u                       NA    NA   1    
+## lin(pregnant)        0.263 0.015   1   *
+## sm(pregnant)         0.011 0.000   8    
+## lin(glucose)         1.000 0.557   1 ***
+## sm(glucose)          0.176 0.000   9    
+## lin(pressure)        0.010 0.000   1    
+## sm(pressure)         0.010 0.000   9    
+## lin(mass)            1.000 0.277   1 ***
+## sm(mass)             0.504 0.037   8  **
+## lin(pedigree)        0.095 0.003   1    
+## sm(pedigree)         0.367 0.005   8   *
+## lin(age)             0.140 0.008   1    
+## sm(age)              0.700 0.098   8  **
 ## *:P(gamma = 1)&gt;.25 **:P(gamma = 1)&gt;.5 ***:P(gamma = 1)&gt;.9</code></pre>
-</div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li>
 <a href="#ridge-und-lasso">Ridge und Lasso</a><ul class="nav nav-pills nav-stacked">
@@ -426,11 +438,13 @@ m0 &lt;-<span class="st"> </span><span class="kw">spikeSlabGAM</span>(diabetes ~
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

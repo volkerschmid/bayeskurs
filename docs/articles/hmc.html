@@ -8,15 +8,18 @@
 <title>Hamiltonian MC und STAN • bayeskurs</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Hamiltonian MC und STAN">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container template-article">
+      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -24,18 +27,26 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">bayeskurs</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">bayeskurs</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Themen</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="http://www.bioimg.statistik.uni-muenchen.de">Bioimaging Group</a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -45,17 +56,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Hamiltonian MC und STAN</h1>
                         <h4 class="author">Volker Schmid</h4>
             
             <h4 class="date">12 Juni. 2017</h4>
-          </div>
+      
+      
+      <div class="hidden name"><code>hmc.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="hamiltonsche-mechanik" class="section level2">
 <h2 class="hasAnchor">
 <a href="#hamiltonsche-mechanik" class="anchor"></a>Hamiltonsche Mechanik</h2>
@@ -98,12 +112,10 @@
 <div id="stan-hier-rstan" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-hier-rstan" class="anchor"></a>STAN (hier: RStan)</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages('rstan')</span>
-<span class="kw">library</span>(rstan)</code></pre></div>
-<pre><code>## Warning: Paket 'rstan' wurde unter R Version 3.4.1 erstellt</code></pre>
-<pre><code>## Warning: Paket 'StanHeaders' wurde unter R Version 3.4.1 erstellt</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rstan_options</span>(<span class="dt">auto_write =</span> <span class="ot">TRUE</span>)
-<span class="kw">options</span>(<span class="dt">mc.cores =</span> parallel::<span class="kw">detectCores</span>())</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#install.packages('rstan')</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(rstan)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/rstan_options">rstan_options</a></span>(<span class="dt">auto_write =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">options</span>(<span class="dt">mc.cores =</span> parallel<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/parallel/topics/detectCores">detectCores</a></span>())</a></code></pre></div>
 <p>Beispiel Lineare Regression <span class="math display">\[y_i \sim N(x_i'\beta,\sigma^2)\]</span> <span class="math display">\[ \beta_j \sim N(0, 1000)\]</span> <span class="math display">\[ \sigma^2 \sim \chi^2(2)\]</span></p>
 </div>
 <div id="stan-modell" class="section level2">
@@ -129,44 +141,45 @@ model {
 <div id="stan-beispiel-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-1" class="anchor"></a>STAN Beispiel (1)</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Simulate some data</span>
-N &lt;-<span class="st"> </span><span class="dv">1000</span>
-M &lt;-<span class="st"> </span><span class="dv">3</span>
-x &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>,N), <span class="kw">rpois</span>(N,<span class="dv">5</span>), <span class="kw">runif</span>(N,<span class="dv">2</span>,<span class="dv">3</span>))
-truebeta &lt;-<span class="st"> </span><span class="kw">c</span>(-<span class="dv">14</span>, <span class="dv">0</span>, <span class="dv">5</span>)
-truesigma &lt;-<span class="st"> </span><span class="dv">1</span>
-y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, x%*%truebeta, truesigma)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Simulate some data</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">N &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">M &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">x &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>,N), <span class="kw">rpois</span>(N,<span class="dv">5</span>), <span class="kw">runif</span>(N,<span class="dv">2</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">truebeta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">14</span>, <span class="dv">0</span>, <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">truesigma &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, x<span class="op">%*%</span>truebeta, truesigma)</a></code></pre></div>
 </div>
 <div id="stan-beispiel-2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-2" class="anchor"></a>STAN Beispiel (2)</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stan_data &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">N=</span>N, <span class="dt">M=</span>M, <span class="dt">y=</span>y, <span class="dt">x=</span>x)
-limo &lt;-<span class="st"> </span><span class="kw">stan</span>(<span class="dt">file =</span> <span class="st">'limo.stan'</span>, 
-  <span class="dt">model_name=</span><span class="st">'LinearesModell'</span>, <span class="dt">data=</span>stan_data, 
-  <span class="dt">iter=</span><span class="dv">1000</span>, <span class="dt">chains=</span><span class="dv">4</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">stan_data &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">N=</span>N, <span class="dt">M=</span>M, <span class="dt">y=</span>y, <span class="dt">x=</span>x)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">limo &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/stan">stan</a></span>(<span class="dt">file =</span> <span class="st">'limo.stan'</span>, </a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  <span class="dt">model_name=</span><span class="st">'LinearesModell'</span>, <span class="dt">data=</span>stan_data, </a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  <span class="dt">iter=</span><span class="dv">1000</span>, <span class="dt">chains=</span><span class="dv">4</span>)</a></code></pre></div>
+<pre><code>## trying deprecated constructor; please alert package maintainer</code></pre>
 </div>
 <div id="stan-beispiel-ergebnisse" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(limo)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">print</span>(limo)</a></code></pre></div>
 <pre><code>## Inference for Stan model: LinearesModell.
 ## 4 chains, each with iter=1000; warmup=500; thin=1; 
 ## post-warmup draws per chain=500, total post-warmup draws=2000.
 ## 
 ##            mean se_mean   sd    2.5%     25%     50%     75%   97.5% n_eff
-## beta[1]  -13.77    0.01 0.26  -14.29  -13.95  -13.76  -13.59  -13.27   730
-## beta[2]   -0.01    0.00 0.01   -0.03   -0.02   -0.01    0.00    0.02  1253
-## beta[3]    4.92    0.00 0.10    4.72    4.85    4.92    4.99    5.12   714
-## sigma      0.97    0.00 0.02    0.93    0.95    0.97    0.98    1.01  1305
-## lp__    -468.78    0.05 1.35 -472.23 -469.48 -468.49 -467.75 -467.06   754
+## beta[1]  -13.74    0.01 0.29  -14.31  -13.94  -13.74  -13.54  -13.17   669
+## beta[2]   -0.03    0.00 0.01   -0.06   -0.04   -0.03   -0.02    0.00  1200
+## beta[3]    4.98    0.00 0.11    4.76    4.90    4.97    5.05    5.20   696
+## sigma      1.02    0.00 0.02    0.97    1.00    1.02    1.03    1.06  1028
+## lp__    -516.81    0.06 1.53 -520.99 -517.55 -516.47 -515.69 -514.94   737
 ##         Rhat
-## beta[1] 1.00
+## beta[1] 1.01
 ## beta[2] 1.00
-## beta[3] 1.00
+## beta[3] 1.01
 ## sigma   1.00
-## lp__    1.01
+## lp__    1.00
 ## 
-## Samples were drawn using NUTS(diag_e) at Thu Jun 29 10:02:37 2017.
+## Samples were drawn using NUTS(diag_e) at Tue May 15 14:57:37 2018.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -174,73 +187,73 @@ limo &lt;-<span class="st"> </span><span class="kw">stan</span>(<span class="dt"
 <div id="stan-beispiel-ergebnisse-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-1" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta&lt;-<span class="kw">As.mcmc.list</span>(limo,<span class="dt">pars=</span><span class="st">"beta"</span>)
-beta0&lt;-<span class="kw">As.mcmc.list</span>(limo,<span class="dt">pars=</span><span class="st">"beta[1]"</span>)
-coda::<span class="kw">traceplot</span>(beta0)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">beta&lt;-<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo,<span class="dt">pars=</span><span class="st">"beta"</span>)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">beta0&lt;-<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo,<span class="dt">pars=</span><span class="st">"beta[1]"</span>)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">coda<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/coda/topics/traceplot">traceplot</a></span>(beta0)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-2" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coda::<span class="kw">densplot</span>(beta0)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">coda<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/coda/topics/densplot">densplot</a></span>(beta0)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-3" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-3" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  beta1&lt;-<span class="kw">As.mcmc.list</span>(limo,<span class="dt">pars=</span><span class="st">"beta[2]"</span>)
-  <span class="kw">plot</span>(beta1)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">  beta1&lt;-<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo,<span class="dt">pars=</span><span class="st">"beta[2]"</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">  <span class="kw">plot</span>(beta1)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-4" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-4" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  beta2&lt;-<span class="kw">As.mcmc.list</span>(limo,<span class="dt">pars=</span><span class="st">"beta[3]"</span>)
-  <span class="kw">plot</span>(beta2)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">  beta2&lt;-<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo,<span class="dt">pars=</span><span class="st">"beta[3]"</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="kw">plot</span>(beta2)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-5" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-5" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coda::<span class="kw">acfplot</span>(beta)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">coda<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/coda/topics/trellisplots">acfplot</a></span>(beta)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-6" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-6" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigma&lt;-<span class="kw">As.mcmc.list</span>(limo,<span class="dt">pars=</span><span class="st">"sigma"</span>)
-<span class="kw">plot</span>(sigma)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">sigma&lt;-<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo,<span class="dt">pars=</span><span class="st">"sigma"</span>)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw">plot</span>(sigma)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-7" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-7" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coda::<span class="kw">acfplot</span>(sigma)</code></pre></div>
-<p><img src="hmc_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">coda<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/coda/topics/trellisplots">acfplot</a></span>(sigma)</a></code></pre></div>
+<p><img src="hmc_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 <div id="stan-beispiel-ergebnisse-8" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stan-beispiel-ergebnisse-8" class="anchor"></a>STAN Beispiel Ergebnisse</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coda::<span class="kw">gelman.diag</span>(<span class="kw">As.mcmc.list</span>(limo))</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">coda<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/coda/topics/gelman.diag">gelman.diag</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/rstan/topics/As.mcmc.list">As.mcmc.list</a></span>(limo))</a></code></pre></div>
 <pre><code>## Potential scale reduction factors:
 ## 
 ##         Point est. Upper C.I.
-## beta[1]       1.00       1.00
-## beta[2]       1.00       1.00
+## beta[1]       1.00       1.01
+## beta[2]       1.00       1.01
 ## beta[3]       1.00       1.01
-## sigma         1.00       1.01
-## lp__          1.01       1.02
+## sigma         1.00       1.00
+## lp__          1.01       1.03
 ## 
 ## Multivariate psrf
 ## 
 ## 1.01</code></pre>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#hamiltonsche-mechanik">Hamiltonsche Mechanik</a></li>
       <li><a href="#hamiltonian-mc-hybrid-mc">Hamiltonian MC (Hybrid MC)</a></li>
@@ -271,11 +284,13 @@ coda::<span class="kw">traceplot</span>(beta0)</code></pre></div>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

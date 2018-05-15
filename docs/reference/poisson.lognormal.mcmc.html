@@ -18,11 +18,21 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
+<meta property="og:title" content="MCMC Beispiel für Poisson-Likelihood mit Lognormal-Priori — poisson.lognormal.mcmc" />
+
+<meta property="og:description" content="MCMC Beispiel für Poisson-Likelihood mit Lognormal-Priori" />
+<meta name="twitter:card" content="summary" />
+
 
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -38,7 +48,7 @@
   <body>
     <div class="container template-reference-topic">
       <header>
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -46,21 +56,28 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">bayeskurs</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">bayeskurs</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../articles/index.html">Themen</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="http://www.bioimg.statistik.uni-muenchen.de">Bioimaging Group</a>
+</li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -68,21 +85,25 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>MCMC Beispiel für Poisson-Likelihood mit Lognormal-Priori</h1>
+    
+    <div class="hidden name"><code>poisson.lognormal.mcmc.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>MCMC Beispiel für Poisson-Likelihood mit Lognormal-Priori</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>poisson.lognormal.mcmc</span>(<span class='no'>sumx</span>, <span class='no'>n</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>1000</span>),
   <span class='kw'>I</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>do.tuning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tuning</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>do.burnin</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>burnin</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -142,11 +163,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

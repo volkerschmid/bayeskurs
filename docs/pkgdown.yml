@@ -1,0 +1,16 @@
+pandoc: 2.1.3
+pkgdown: 1.0.0
+pkgdown_sha: ~
+articles:
+  HierarchischeModelle: HierarchischeModelle.html
+  Konvergenzdiagnostik: Konvergenzdiagnostik.html
+  Modellwahl: Modellwahl.html
+  Variablenselektion: Variablenselektion.html
+  einfuehrung: einfuehrung.html
+  hmc: hmc.html
+  mischverteilungsmodelle: mischverteilungsmodelle.html
+  rjmcmc: rjmcmc.html
+  sampling: sampling.html
+  samplingstrategien: samplingstrategien.html
+  uebungsimplesamplen: uebungsimplesamplen.html
+
