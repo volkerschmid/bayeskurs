@@ -1,0 +1,528 @@
+\documentclass[ignorenonframetext,]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+\ifxetex
+\usepackage{mathspec}
+\else
+\usepackage{fontspec}
+\fi
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight0.8\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+\let\insertpartnumber\relax
+\let\partname\relax
+\frame{\partpage}
+}
+\AtBeginSection{
+\ifbibliography
+\else
+\let\insertsectionnumber\relax
+\let\sectionname\relax
+\frame{\sectionpage}
+\fi
+}
+\AtBeginSubsection{
+\let\insertsubsectionnumber\relax
+\let\subsectionname\relax
+\frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+\title{Modellwahl}
+\author{Volker Schmid}
+\date{\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Juli 2017
+\end{enumerate}}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Bayes-Faktor}\label{bayes-faktor}
+
+\begin{frame}{Bayes-Faktor}
+Für zwei alternative Hypothesen $H_0: \theta\in\Theta_0$ und $H_1: \theta\in\Theta_1$ ist der \textbf{Bayes-Faktor}:
+\[
+B(x) = \frac{P(x|H_0)}{P(x|H_1)}=\frac{\frac{P(\theta \in \Theta_0|x)}{P(\theta \in \Theta_1|x)}}{\frac{p(\theta\in\Theta_0)}{p(\theta\in\Theta_1)}}
+\]
+\end{frame}
+
+\begin{frame}{Modellwahl über Bayes-Faktor}
+\begin{itemize}
+\item Gegeben: Daten $x$, $K$ verschiedene Modelle
+\item Wahrscheinlichkeit, $x$ unter Modell $k$ zu beobachten: $p(x|M_k)$
+\item Priori auf Modelle: $p(M_k)$
+\item Posteriori-Odds:
+\begin{equation*}
+\frac{p(M_k|x)}{p(M_l|x)}=\frac{p(x|M_k)p(M_k)}{p(x|M_l)p(M_l)}\frac{p(x)}{p(x)}
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Anmerkungen}
+\begin{itemize}
+\item $\frac{p(x|M_k)}{p(x|M_l)}$ ist der Bayesfaktor zugunsten von $M_k$ 
+\note{ist aber nicht notwednig unbhängig von Priori auf Daten!}
+\item Bayesfaktor unabhängig von der Priori auf die Modelle
+\item Zähler/Nenner ist die \textbf{marginale Likelihood}
+\begin{equation}
+p(x|M_k)=\int p(x|\theta_k,M_k)p(\theta_k|M_k)d\theta_k
+\end{equation}
+\item Für einfache Hypothesen ($H_0:\theta=\theta_0, H_1:\theta=\theta_1$) ist der Bayesfaktor gleich dem Likelihood ratio.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Skala des Bayes-Faktors}
+Nach Jeffreys (1961) kann der Bayes-Faktor wie folgt interpretiert werden:
+\begin{tabular}{ll}
+$B<1$ & $H_0$ wird gestützt\\
+$B\in [1,10^{1/2}]$ & Anzeichen gegen $H_0$, aber kaum erwähnenswert\\
+$B\in [10^{1/2},10]$ & beachtliche Anzeichen gegen $H_0$ \\
+$B\in [10,10^{3/2}]$ & starke Anzeichen gegen $H_0$\\
+$B\in [10^{3/2},100]$ & sehr starke Anzeichen gegen $H_0$\\
+$B>100$ & ausschlaggebende Anzeichen gegen $H_0$
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Beispiel Brandmeldungen in Frankville, NC}
+
+\emph{Quelle: Jim Albert, LearnBayes Vignette}
+
+Daten: Anzahl von Brandmeldungen in aufeinanderfolgenden Monaten:
+\(y_1, ..., y_N\). Modell
+
+\begin{itemize}
+\item $y_1, ..., y_N \sim f(y | \theta)$
+\item $\theta \sim g(\theta)$
+\end{itemize}
+
+\begin{itemize}
+\tightlist
+\item
+  Prioriannahmen über den Erwartungswert von \(y\): Erwartungswert ist
+  70, Standardabweichung ist 10.
+\item
+  Unklar: welche Verteilung haben die Daten?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Verschiedene Modellannahmen}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(y \sim Po(\theta)\)
+\item
+  \(y \sim N(\theta,12^2)\)
+\item
+  \(y \sim N(\theta, 6^2)\)
+\end{enumerate}
+
+In allen Fällen: \(\theta \sim Ga(280, 4)\).
+(\(E(\theta)=70, sd(\theta)=4.2\))
+
+\end{frame}
+
+\begin{frame}[fragile]{Visueller Vergleich}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fire.counts <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{75}\NormalTok{, }\DecValTok{88}\NormalTok{, }\DecValTok{84}\NormalTok{, }\DecValTok{99}\NormalTok{, }\DecValTok{79}\NormalTok{, }\DecValTok{68}\NormalTok{, }\DecValTok{86}\NormalTok{, }\DecValTok{109}\NormalTok{, }\DecValTok{73}\NormalTok{, }\DecValTok{85}\NormalTok{, }\DecValTok{101}\NormalTok{, }\DecValTok{85}\NormalTok{,}
+                 \DecValTok{75}\NormalTok{, }\DecValTok{81}\NormalTok{, }\DecValTok{64}\NormalTok{, }\DecValTok{77}\NormalTok{, }\DecValTok{83}\NormalTok{, }\DecValTok{83}\NormalTok{, }\DecValTok{88}\NormalTok{, }\DecValTok{83}\NormalTok{, }\DecValTok{78}\NormalTok{, }\DecValTok{83}\NormalTok{, }\DecValTok{78}\NormalTok{, }\DecValTok{80}\NormalTok{,}
+                 \DecValTok{82}\NormalTok{, }\DecValTok{90}\NormalTok{, }\DecValTok{74}\NormalTok{, }\DecValTok{72}\NormalTok{, }\DecValTok{69}\NormalTok{, }\DecValTok{72}\NormalTok{, }\DecValTok{76}\NormalTok{, }\DecValTok{76}\NormalTok{, }\DecValTok{104}\NormalTok{, }\DecValTok{86}\NormalTok{, }\DecValTok{92}\NormalTok{, }\DecValTok{88}\NormalTok{)}
+\KeywordTok{hist}\NormalTok{(fire.counts, }\DataTypeTok{probability=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, .}\DecValTok{08}\NormalTok{))}
+\NormalTok{x <-}\StringTok{ }\DecValTok{60}\NormalTok{:}\DecValTok{110}
+\KeywordTok{lines}\NormalTok{(x, }\KeywordTok{dpois}\NormalTok{(x, }\DataTypeTok{lambda=}\KeywordTok{mean}\NormalTok{(fire.counts)), }\DataTypeTok{col=}\StringTok{"red"}\NormalTok{)}
+\KeywordTok{lines}\NormalTok{(x, }\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(fire.counts), }\DataTypeTok{sd=}\DecValTok{12}\NormalTok{), }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{)}
+\KeywordTok{lines}\NormalTok{(x, }\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean=}\KeywordTok{mean}\NormalTok{(fire.counts), }\DataTypeTok{sd=}\DecValTok{6}\NormalTok{), }\DataTypeTok{col=}\StringTok{"green"}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\DataTypeTok{legend=}\KeywordTok{c}\NormalTok{(}\StringTok{"M1: Poisson(theta)"}\NormalTok{,}
+                            \StringTok{"M2: N(theta, 12)"}\NormalTok{,}
+                            \StringTok{"M3: N(theta, 6)"}\NormalTok{),}
+       \DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"blue"}\NormalTok{, }\StringTok{"green"}\NormalTok{), }\DataTypeTok{lty=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Modellwahl_files/figure-beamer/unnamed-chunk-1-1.pdf}
+
+\end{frame}
+
+\begin{frame}[fragile]{Prädiktive/Marginale Dichte von \(y\)}
+
+\[
+f(y) = \int \prod_{j=1}^N f(y_j | \theta) g(\theta) d\theta.
+\] \#\# Laplace-Approximation \{.allowframebreaks\}
+
+\begin{itemize}
+\tightlist
+\item
+  Berechne Posteriori-Modus
+\item
+  Taylor-Approximation der Log-Likelihood
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{laplace <-}\StringTok{ }\NormalTok{function (logpost, mode, ...) }
+\NormalTok{\{}
+  \NormalTok{fit =}\StringTok{ }\KeywordTok{optim}\NormalTok{(mode, logpost, }\DataTypeTok{gr =} \OtherTok{NULL}\NormalTok{, }
+    \NormalTok{..., }\DataTypeTok{hessian =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{fnscale =} \NormalTok{-}\DecValTok{1}\NormalTok{))}
+  \NormalTok{mode =}\StringTok{ }\NormalTok{fit$par}
+  \NormalTok{h =}\StringTok{ }\NormalTok{-}\KeywordTok{solve}\NormalTok{(fit$hessian)}
+  \NormalTok{p =}\StringTok{ }\KeywordTok{length}\NormalTok{(mode)}
+  \NormalTok{int =}\StringTok{ }\NormalTok{p/}\DecValTok{2} \NormalTok{*}\StringTok{ }\KeywordTok{log}\NormalTok{(}\DecValTok{2} \NormalTok{*}\StringTok{ }\NormalTok{pi) +}\StringTok{ }\FloatTok{0.5} \NormalTok{*}\StringTok{ }\KeywordTok{log}\NormalTok{(}\KeywordTok{det}\NormalTok{(h)) +}
+\StringTok{  }\KeywordTok{logpost}\NormalTok{(mode, ...)}
+  \NormalTok{stuff =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{mode =} \NormalTok{mode, }\DataTypeTok{var =} \NormalTok{h, }\DataTypeTok{int =} \NormalTok{int,}
+                  \DataTypeTok{converge =} \NormalTok{fit$convergence ==}\StringTok{ }\DecValTok{0}\NormalTok{)}
+  \KeywordTok{return}\NormalTok{(stuff)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Erstes Modell}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model}\FloatTok{.1} \NormalTok{<-}\StringTok{ }\NormalTok{function(theta, y)\{}
+  \KeywordTok{sum}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{dpois}\NormalTok{(y, theta))) +}\StringTok{ }
+\StringTok{    }\KeywordTok{dgamma}\NormalTok{(theta, }\DataTypeTok{shape=}\DecValTok{280}\NormalTok{, }\DataTypeTok{rate=}\DecValTok{4}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{log.pred}\FloatTok{.1} \NormalTok{<-}\StringTok{ }\KeywordTok{laplace}\NormalTok{(model}\FloatTok{.1}\NormalTok{, }\DecValTok{80}\NormalTok{, fire.counts)$int}
+\NormalTok{log.pred}\FloatTok{.1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -131.6253
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Zweites und drittes Modell}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model}\FloatTok{.2} \NormalTok{<-}\StringTok{ }\NormalTok{function(theta, y)\{}
+  \KeywordTok{sum}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y, theta, }\DecValTok{6}\NormalTok{))) +}\StringTok{ }
+\StringTok{    }\KeywordTok{dgamma}\NormalTok{(theta, }\DataTypeTok{shape=}\DecValTok{280}\NormalTok{, }\DataTypeTok{rate=}\DecValTok{4}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{model}\FloatTok{.3} \NormalTok{<-}\StringTok{ }\NormalTok{function(theta, y)\{}
+  \KeywordTok{sum}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y, theta, }\DecValTok{12}\NormalTok{))) +}\StringTok{ }
+\StringTok{    }\KeywordTok{dgamma}\NormalTok{(theta, }\DataTypeTok{shape=}\DecValTok{280}\NormalTok{, }\DataTypeTok{rate=}\DecValTok{4}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{log.pred}\FloatTok{.2} \NormalTok{<-}\StringTok{ }\KeywordTok{laplace}\NormalTok{(model}\FloatTok{.2}\NormalTok{, }\DecValTok{80}\NormalTok{, fire.counts)$int}
+\NormalTok{log.pred}\FloatTok{.3} \NormalTok{<-}\StringTok{ }\KeywordTok{laplace}\NormalTok{(model}\FloatTok{.3}\NormalTok{, }\DecValTok{80}\NormalTok{, fire.counts)$int}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Modellvergleich}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Model=}\DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{log.pred=}\KeywordTok{c}\NormalTok{(log.pred}\FloatTok{.1}\NormalTok{, log.pred}\FloatTok{.2}\NormalTok{, log.pred}\FloatTok{.3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Model  log.pred
+## 1     1 -131.6253
+## 2     2 -144.7554
+## 3     3 -132.9464
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{exp}\NormalTok{(log.pred}\FloatTok{.1} \NormalTok{-}\StringTok{ }\NormalTok{log.pred}\FloatTok{.3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.74751
+\end{verbatim}
+
+Nach Jeffreys \emph{beachtliche Anzeichen} für Modell 1 gegenüber Modell
+3.
+
+\end{frame}
+
+\section{Devianz-Informationskriterium
+(DIC)}\label{devianz-informationskriterium-dic}
+
+\begin{frame}{Informationskriterien}
+
+Übliche Informationskriterien (z.B. AIC und BIC) messen die Anpassung
+plus Anzahl der Parameter. Bei hierarchischen Modellen ist die Anzahl
+der Parameter jedoch nicht aussagekräftig, insbesondere wenn die
+Parameter abhängig sind. Deshalb ist die Idee hier, die \emph{effektive
+Anzahl} der Parameter zu schätzen.
+
+\end{frame}
+
+\begin{frame}{Devianz}
+
+Der Ausdruck
+
+\begin{equation*}
+D(y) := -2 \Big( \log \big( p(y|\hat\theta)\big)-\log \big(p(y|\hat\theta_s)\big)\Big)
+\end{equation*}
+
+heißt Devianz
+
+Dabei sind \(\hat\theta\) die geschätzen Parameter eines Modells \(M_k\)
+und \(\hat\theta_s\) die geschätzten Parameter in einem saturierten
+Modell (Daten komplett angepasst). Dies entspricht minus zweimal dem
+Logarithmus des Likelihoodratios. Manchmal wird auch nur
+\(-2 \log \big( p(y|\hat\theta)\big)\) als Devianz bezeichnet.
+
+\end{frame}
+
+\begin{frame}{Maß der Reduktion der Überraschung}
+
+Sei \(\hat{\theta}\) ein Schätzer für \(\theta^{TRUE}\). Betrachte nun
+
+\begin{equation*}
+d(y,\theta^{TRUE},\hat{\theta})=-2\log\left(p(y|\theta^{TRUE})\right)+2\log\left(p(y|\hat{\theta})\right)
+\end{equation*}
+
+Dies kann interpretiert werden als \emph{Maß der Reduktion der
+Überraschung} oder Unsicherheit aufgrund der Schätzung.
+
+Vorschlag von Spiegelhalter et al.(2002): Benutze
+Posteriori-Erwartungswert von \(d(y,\theta^{TRUE},\hat{\theta})\) als
+\emph{Effektive Anzahl der Parameter} im Bayes-Modell.
+
+\end{frame}
+
+\begin{frame}{Effektive Anzahl von Parametern}
+
+\[\begin{aligned}
+E(d(y,\theta^{TRUE},\hat{\theta})&=E(-2\log\left(p(y|\theta^{TRUE})\right))+E(2\log\left(p(y|\hat{\theta})\right))\\
+           &=: \hat{D(\theta)}-D(\hat{\theta}) =: p_D
+\end{aligned}
+\]
+
+\(p_D\) ist abhängig von * den Daten \(y\) * dem Datenmodell * der
+Priori \(p(\theta)\) * der Wahl des Punktschätzers \(\hat\theta\)
+
+\end{frame}
+
+\begin{frame}{Definition DIC}
+
+Das \textbf{Deviance Information Criterion (DIC)} ist definiert als \[
+DIC=\hat{D(\theta)}+p_D
+\]
+
+Dies entspricht dem Bayesianischen Maß für die Anpassung des Fits plus
+den Komplexitätsterm \(p_D\).
+
+Es gilt: \(\hat{D(\theta)}=E(D(\theta))=E(-2\log(p(y|\theta)))\) wird
+kleiner für bessere Anpassung.
+
+\end{frame}
+
+\begin{frame}{Anmerkungen DIC}
+
+\begin{itemize}
+\tightlist
+\item
+  Bei substantiellem Konflikt zwischen Priori und Daten sowie bei nicht
+  unimodalen Posterioris kann \(p_D\) negativ werden.
+\item
+  Falls kein hierarchische Modell vorliegt und alle Prioris komplett
+  spezifiziert sind, gilt
+\end{itemize}
+
+\[ AIC=D(\hat{\theta}_{ML})+2\cdot p \]
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Berechnung des DIC bei MCMC}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\hat{D(\theta)}\): In jeder MCMC-Iteration \(k\) berechne
+  \(D(\theta^{(k)}\) und schätze \(\hat{D(\theta)}\) über Mittelwert
+  (Median)
+\item
+  \({D(\hat\theta)}\): Benutze Punktschätzer (Mittelwert, Median) und
+  setze diesen in \(D\) ein (plug-in Schätzer)
+\end{itemize}
+
+Poisson-Log-Normal-Modell (Hausübung 1):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rw=}\DecValTok{1}
+\KeywordTok{source}\NormalTok{(}\StringTok{"drivers_example_mcmc.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mu<-}\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\KeywordTok{c}\NormalTok{(T,nr.it))}
+\NormalTok{D <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\OtherTok{NA}\NormalTok{,nr.it)}
+\NormalTok{sigma<-sigma2.save}
+\NormalTok{for (i in }\DecValTok{1}\NormalTok{:nr.it)}
+     \NormalTok{\{}
+        \NormalTok{mu[,i]=alpha.save[i]+belt*beta.save[i]+gamma.save[,i]+delta.save[,i]}
+        \NormalTok{D[i] <-}\StringTok{ }\NormalTok{-}\DecValTok{2}\NormalTok{*}\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y, }\DataTypeTok{mean=}\NormalTok{mu[,i], }\DataTypeTok{sd=}\KeywordTok{sqrt}\NormalTok{(sigma[i]),}\DataTypeTok{log=}\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{density}\NormalTok{(D))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Modellwahl_files/figure-beamer/deviance1-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{D.theta.hat <-}\StringTok{ }\NormalTok{-}\DecValTok{2}\NormalTok{*}\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y,}\KeywordTok{apply}\NormalTok{(mu,}\DecValTok{1}\NormalTok{,median),}\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{median}\NormalTok{(sigma)),}\DataTypeTok{log=}\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{D.hat <-}\StringTok{ }\KeywordTok{median}\NormalTok{(D)}
+\NormalTok{pD <-}\StringTok{ }\NormalTok{D.hat -}\StringTok{ }\NormalTok{D.theta.hat}
+\NormalTok{(DIC1<-}\KeywordTok{data.frame}\NormalTok{(}\StringTok{"rw"}\NormalTok{=}\DecValTok{1}\NormalTok{,}\StringTok{"D"}\NormalTok{=D.hat,}\StringTok{"pD"}\NormalTok{=pD,}\StringTok{"DIC"}\NormalTok{=D.hat+pD))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   rw        D       pD     DIC
+## 1  1 755.0859 28.57209 783.658
+\end{verbatim}
+
+Als Vergleichsmodell Zeittrend mit Random Walk zweiter Ordnung als
+Priori (RW2)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rw=}\DecValTok{2}
+\KeywordTok{source}\NormalTok{(}\StringTok{"drivers_example_mcmc.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## One iteration takes roughly 0.02 seconds. Estimated total time of 10000 Iterations is 235 seconds.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mu2<-}\KeywordTok{array}\NormalTok{(}\DecValTok{0}\NormalTok{,}\KeywordTok{c}\NormalTok{(T,nr.it))}
+\NormalTok{D2 <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\OtherTok{NA}\NormalTok{,nr.it)}
+\NormalTok{for (i in }\DecValTok{1}\NormalTok{:nr.it)}
+     \NormalTok{\{}
+        \NormalTok{mu2[,i]=alpha.save[i]+belt*beta.save[i]+gamma.save[,i]+delta.save[,i]}
+        \NormalTok{D2[i] <-}\StringTok{ }\NormalTok{-}\DecValTok{2}\NormalTok{*}\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y, }\DataTypeTok{mean=}\NormalTok{mu2[,i], }\DataTypeTok{sd=}\KeywordTok{sqrt}\NormalTok{(sigma2.save[i]),}\DataTypeTok{log=}\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+\NormalTok{D.theta.hat2 <-}\StringTok{ }\NormalTok{-}\DecValTok{2}\NormalTok{*}\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y,}\KeywordTok{apply}\NormalTok{(mu2,}\DecValTok{1}\NormalTok{,median),}\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{median}\NormalTok{(sigma2.save)),}\DataTypeTok{log=}\OtherTok{TRUE}\NormalTok{))}
+\NormalTok{D.hat2 <-}\StringTok{ }\KeywordTok{median}\NormalTok{(D2)}
+\NormalTok{pD2 <-}\StringTok{ }\NormalTok{D.hat2 -}\StringTok{ }\NormalTok{D.theta.hat2}
+\NormalTok{DIC2<-}\KeywordTok{data.frame}\NormalTok{(}\StringTok{"rw"}\NormalTok{=}\DecValTok{2}\NormalTok{,}\StringTok{"D"}\NormalTok{=D.hat2,}\StringTok{"pD"}\NormalTok{=pD2,}\StringTok{"DIC"}\NormalTok{=D.hat2+pD2)}
+\end{Highlighting}
+\end{Shaded}
+
+und ohne zeitlichen Trend (0):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(}\KeywordTok{rbind}\NormalTok{(DIC3,DIC1,DIC2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   rw        D       pD      DIC
+## 1  0 881.0312 16.02606 897.0572
+## 2  1 754.3135 29.25658 783.5700
+## 3  2 752.0959 29.16543 781.2614
+\end{verbatim}
+
+\end{frame}
+
+\end{document}

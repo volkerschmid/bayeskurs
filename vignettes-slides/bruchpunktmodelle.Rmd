@@ -1,0 +1,201 @@
+---
+title: "Bruchpunktmodelle"
+author: "Volker Schmid"
+date: "17. Juli 2017"
+output:
+  beamer_presentation:
+    keep_tex: false
+    toc: true
+    slide_level: 2
+vignette: >
+  %\VignetteIndexEntry{Bruchpunktmodelle}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(bayeskurs)
+```
+
+# Bruchpunktmodelle
+## Bruchpunktmodelle
+
+[//]: Mögliche Erweiterung: Diskrete Markovketten, eventuell Epidemisches Modell zeigen
+
+* Beim Bruchpunktmodell ändert sich ein Parameter eines Modells an einem Punkt sprungartig
+* In der Regel Anwendung auf Zeitreihen
+* Theoretisch diskrete oder stetige Zeit möglich
+
+Beispiele:
+
+* Aktienkurse
+* Schlafdaten
+* Krankheiten mit Schüben
+* Stärke von Sportmannschaften
+* Zeitreihen von Krankheitsfällen (Bruchpunkt: Ausbruch einer Epidemie)
+
+## Beispiel: Unfälle in englischen Kohlebergwerken {.allowframebreaks}
+
+[//]: Ursprünglicher Autor: Michael Höhle, Daten siehe data(coal, package="boot")
+
+Der Datensatz {\texttt coal.txt} enthält die jährliche Anzahl von Unfällen in englischen Kohlebergwerken wärend der Jahre
+1851-1962 (insgesamt 112 Jahre). Ein Plot der Daten zeigt einen
+deutlichen Rückgang der Unfälle ab etwa 1900.
+
+```{r}
+data("coal",package="bayeskurs")
+```
+```{r}
+plot(coal$year, coal$disasters, type = "h", 
+     xlab = "Jahr", ylab = "Anzahl Unfälle")
+```
+
+## Bruckpunktmodell
+
+Ein Bruchpunktmodell für diese Daten $\mathbf{y}=(y_1,\ldots, y_{112})$ hat
+folgende Form:
+\begin{align*}
+  Y_i \sim \left\{
+    \begin{array}{ll}
+      Po(\lambda_1), & i=1,\ldots,\theta,\\
+      Po(\lambda_2), & i=\theta+1,\ldots, 112,
+    \end{array}
+    \right.
+\end{align*}
+
+Prioris:
+
+* $\lambda_i\mid\alpha \sim Ga(3,\alpha)$ für $i=1,2$ 
+* $\alpha \sim Ga(10,10)$
+* $\theta \sim U\{1,\ldots,112\}$.
+
+## Posteriori
+
+Die gemeinsame Posteriori-Dichte ist gegeben durch:
+
+\begin{align*}
+p(\lambda_1, \lambda_2, \alpha, \theta \mid \mathbf{y})
+  &\propto p(\mathbf{y} \mid \lambda_1, \lambda_2, \alpha, \theta)\, p(\lambda_1, \lambda_2, \alpha, \theta) \\
+  &= p(\mathbf{y} \mid \lambda_1, \lambda_2, \alpha, \theta)\, p(\lambda_1 \mid \lambda_2, \alpha, \theta) \\  & \qquad\cdot p(\lambda_2 \mid \alpha, \theta)\, p(\alpha\mid\theta)\, p(\theta) \\
+  &= p(\mathbf{y} \mid \lambda_1, \lambda_2, \theta)\, p(\lambda_1 \mid \alpha)\, p(\lambda_2 \mid \alpha)\, p(\alpha) p\, (\theta) \\
+  &\propto \left( \prod_{i = 1}^\theta   \lambda_1^{y_i} \exp(-\lambda_1) \right)
+           \left( \prod_{i = \theta+1}^n \lambda_2^{y_i} \exp(-\lambda_2) \right) \\
+  &\qquad\cdot \underbrace{\alpha^3 \lambda_1^{3-1} \exp(-\alpha\lambda_1)}_{\lambda_1\mid\alpha \sim Ga(3,\alpha)} \,
+               \underbrace{\alpha^3 \lambda_2^{3-1} \exp(-\alpha\lambda_2)}_{\lambda_2\mid\alpha \sim Ga(3,\alpha)} \\
+               &\qquad\cdot
+               \underbrace{\alpha^{10-1} \exp(-10\alpha)}_{\alpha \sim Ga(10,10)} \,
+               \underbrace{\text{I}(1\leq \theta \leq 112)}_{\theta \sim \text{U}\{1,\ldots, 112\}}\,.
+\end{align*}
+
+## Full Conditionals {.allowframebreaks}
+
+\begin{align*}
+\lambda_1 \mid \lambda_2, \alpha, \theta, \mathbf{y}
+  &\propto \left( \prod_{i = 1}^\theta \lambda_1^{y_i} \exp(-\lambda_1) \right)
+           \lambda_1^{3-1} \exp(-\alpha\lambda_1)\\
+  &= \lambda_1^{3+\sum_{i=1}^\theta y_i - 1} \exp\big(-\lambda_1(\theta+\alpha)\big)
+\end{align*}
+Dies ist der Kern einer $Ga(3+\sum_{i=1}^\theta y_i, \theta+\alpha)$-Verteilung.
+
+\begin{align*}
+\lambda_2 \mid \lambda_1, \alpha, \theta, \mathbf{y}
+  &\propto \left( \prod_{i = \theta+1}^n \lambda_2^{y_i} \exp(-\lambda_2) \right)
+           \lambda_2^{3-1} \exp(-\alpha\lambda_2)\\
+  &= \lambda_2^{3+(\sum_{i=\theta+1}^n y_i) - 1} \exp\big(-\lambda_2(\alpha + [n - \theta])\big)
+\end{align*}
+Dies ist der Kern einer $Ga(3+\sum_{\theta+1}^{112} y_i, \alpha + 112 - \theta)$, da $n=112$.
+
+\begin{align*}
+\alpha \mid \lambda_1, \lambda_2, \theta, \mathbf{y}
+  &\propto \alpha^3 \exp(-\alpha \lambda_1)
+           \alpha^3 \exp(-\alpha \lambda_2)
+           \alpha^{10-1} \exp(-10\alpha) \\
+  &= \alpha^{16-1} \exp\big(-\alpha(10+\lambda_1+\lambda_2)\big)
+\end{align*}
+Dies ist der Kern einer $Ga(16,10+\lambda_1+\lambda_2)$.
+
+\begin{align*}
+\theta \mid \lambda_1, \lambda_2, \alpha, \mathbf{y}
+  &\propto \left( \prod_{i=1}^\theta   \lambda_1^{y_i} \exp(-\lambda_1) \right)
+           \left( \prod_{i=\theta+1}^n \lambda_2^{y_i} \exp(-\lambda_2) \right)
+           \\ & \quad\cdot \text{I}(1\leq \theta \leq 112) \\
+  &\propto \left( \prod_{i=1}^\theta   \lambda_1^{y_i} \exp(-\lambda_1) \right)
+           \left( \prod_{i=\theta+1}^n \lambda_2^{y_i} \exp(-\lambda_2) \right)
+           \\ & \quad\cdot \frac{\left( \prod_{i=1}^\theta \lambda_2^{y_i} \exp(-\lambda_2) \right)}
+                {\left( \prod_{i=1}^\theta \lambda_2^{y_i} \exp(-\lambda_2) \right)} \,
+           \text{I}(1\leq \theta \leq 112) \\
+  &\propto \left( \prod_{i=1}^\theta \lambda_1^{y_i} \lambda_2^{-y_i} \exp(-\lambda_1) \exp(\lambda_2)\right) \text{I}(1\leq \theta \leq 112) \\
+  &= \exp\big(\theta(\lambda_2-\lambda_1)\big) \left( \frac{\lambda_1}{\lambda_2} \right)^{\sum_{i=1}^\theta y_i}  \text{I}(1\leq \theta \leq 112)
+\end{align*}
+  
+\begin{align*}
+\theta \mid \lambda_1, \lambda_2, \alpha, \mathbf{y}
+  &= \exp\big(\theta(\lambda_2-\lambda_1)\big) \exp\left\{\left( \sum_{i=1}^\theta y_i\right) \log\left(\frac{\lambda_1}{\lambda_2}\right)\right\} \\ & \quad\cdot  \text{I}(1\leq \theta \leq 112)
+\end{align*}
+
+
+## Ergebnisse {.allowframebreaks}
+
+```{r}
+samples <- breakpoint.gibbs(1000, y = coal$disaster)
+
+# plots
+par(mfrow = c(2,2))
+plot(samples[,"lambda1"], type = "l", 
+     ylab = expression(lambda[1]),
+     ylim = c(min(samples[,1:2]), max(samples[,1:2])))
+plot(samples[,"lambda2"], type = "l", 
+     ylab = expression(lambda[2]),
+     ylim = c(min(samples[,1:2]), max(samples[,1:2])))
+acf(samples[,"lambda1"])
+acf(samples[,"lambda2"])
+```
+
+Betrachtung der Pfade: 1000 Realisationen reichen aus, fast kein Burn-in notwendig, kaum Autokorrelation.
+
+
+```{r}
+burnin <- 1:100 # hier großzügiger burn-in angewendet
+par(mfrow = c(2,2))
+# theta
+plot(samples[-burnin, "theta"], type = "S", 
+     ylab = expression(theta))
+hist(samples[-burnin, "theta"], xlab = expression(theta),
+     breaks = ((min(samples[-burnin, "theta"])-1):
+                 (max(samples[-burnin, "theta"])))+0.5,
+     main = "" )
+# lambda_1
+plot(density(samples[-burnin, "lambda1"]), main = 
+       expression(lambda[1]))
+# lambda_2
+plot(density(samples[-burnin, "lambda2"]), main = 
+       expression(lambda[2]))
+```
+
+* Mittelwert und Median für alle Parameter:
+
+```{r}
+
+apply(samples[-burnin,], MAR = 2, mean)
+apply(samples[-burnin,], MAR = 2, median)
+```
+
+Median-Modell im Histogramm:
+
+```{r}
+plot(coal$year, coal$disasters, type = "h", 
+     xlab = "Jahr", ylab = "Anzahl Unfälle")
+medianmodel <- apply(samples[-burnin,], MAR = 2, median)
+jahr1 <- min(coal$year)
+lines(c(jahr1, jahr1 + medianmodel["theta"]),
+      rep(medianmodel["lambda1"], 2), col=2, lwd = 2)
+lines(c(jahr1 + medianmodel["theta"], max(coal$year)),
+      rep(medianmodel["lambda2"], 2), col=2, lwd = 2)
+```
+
+```{r}
+library(coda)
+samples2 <- as.mcmc(samples)
+summary(samples2)
+plot(samples2)
+```

@@ -1,0 +1,222 @@
+---
+title: "Einfaches Samplen"
+author: "Volker Schmid"
+date: "May 15, 2017"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{Einfaches Samplen}
+  %\VignetteEngine{knitr::rmarkdown} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+## Einfaches Sampling
+
+Sei $x_i \sim N(\mu,\tau^{-1})$ mit $\tau=1$ bekannt. Sei $\mu \sim N_{[-1,1]}(0,1)$ und $x={1,0.2,-1.5}$. Samplen Sie aus der Posteriori mit Acception-Rejection-Methode.
+
+Posteriori: $\mu|x \sim N_{[-1,1]}(\sum x_i/4,1/4)$
+```{r A-R}
+x=c(1,0.2,-1.5)
+n=3 
+sumx <- sum(x)
+unten <- pnorm(-.5, sumx/4, sd=1/2)
+oben <- pnorm(.5, sumx/4, sd=1/2)
+spanne <- oben-unten
+xx <- seq(-.7,.7, by=0.01)
+post<-function(x,sumx,spanne)
+{
+  y<-dnorm(x, sumx/4, 1/2)
+  y <- y/spanne
+  y[x< -.5]<-0
+  y[x>.5]<-0
+  return(y)
+}
+plot(xx, post(xx, sumx, spanne), type="l", ylim=c(0,1.7))
+
+factor <- post(-.5, sumx, spanne)/dnorm(-.5,sumx/4,1/2)
+
+lines(xx, factor*dnorm(xx,sumx/4,1/2), col="blue")
+
+sample <- c()
+N<-1000
+while(N!=0)
+{
+  cat(".")
+  prop <- rnorm(N, sumx/4, 1/2)
+  alpha <- post(prop, sumx, spanne)/dnorm(prop, sumx/4, 1/2)/factor
+  u <- runif(N)
+  sample <- c(sample, prop[alpha>u])
+  N <- 1000-length(sample)
+}
+
+plot(sample)
+plot(density(sample))
+hist(sample,breaks = 50, freq=FALSE)
+
+draw.from.post<-function(N,mean,sd,unten=-.5,oben=.5)
+{
+  prop <- rnorm(N, mean, sd)
+  while((sum(prop<unten)+sum(prop>oben))!=0)
+  {
+    prop[prop<unten]<-rnorm(sum(prop<unten),mean,sd)
+    prop[prop>oben]<-rnorm(sum(prop>oben),mean,sd)
+  }
+  return(prop)
+}
+sample<-draw.from.post(10000,sumx/4,1/2,-.5,.5)
+plot(sample)
+hist(sample,breaks = 100, freq=FALSE)
+```
+
+## Gibbs-Sampling
+
+Sei nun $\tau\sim Ga(1,1/1000)$. Ziehe aus der gemeinsamen Posteriori von $\$tau$ und $\mu$ mittels Gibbs-Sampling.
+
+Zuerst mal mit $\mu\sim N(0, 1)$.
+```{r}
+I<-500
+
+s0<-1
+a<-1
+b<-0.001
+n<-length(x)
+
+mu<-tau<-rep(NA,I+1)
+tau[1]<-1000
+mu[1]<-1
+
+for (i in (1:I)+1)
+{
+  tau[i]<-rgamma(1,a+n/2,b+0.5*sum((x-mu[i-1])^2))
+  m<-tau[i]*sumx
+  s<-n*tau[i]+1/s0
+  mu[i]<-rnorm(1,m/s,sqrt(1/s))
+}
+
+tau<-tau[-1]
+mu<-mu[-1]
+
+plot(mu,type="l")
+plot(1/tau,type="l")
+plot(tau,type="l")
+plot(mu,tau)
+plot(mu[1:10],(1/tau)[1:10],type="s")
+plot(density(mu))
+plot(density(1/tau))
+```
+
+Jetzt mit beschränkter Priori:
+```{r}
+I<-500
+
+s0<-1
+a<-1
+b<-0.001
+n<-length(x)
+
+mu<-tau<-rep(NA,I+1)
+tau[1]<-1000
+mu[1]<-1
+
+for (i in (1:I)+1)
+{
+  tau[i]<-rgamma(1,a+n/2,b+0.5*sum((x-mu[i-1])^2))
+  m<-tau[i]*sumx
+  s<-n*tau[i]+1/s0
+  mu[i]<-draw.from.post(1,m/s,sqrt(1/s))
+}
+
+tau<-tau[-1]
+mu<-mu[-1]
+
+plot(mu,type="l")
+plot(1/tau,type="l")
+plot(tau,type="l")
+plot(mu,tau)
+plot(mu[1:10],(1/tau)[1:10],type="s")
+plot(density(mu))
+plot(density(1/tau))
+
+hist(mu,breaks=100)
+print(mean(mu))
+print(mean(tau))
+```
+
+
+## Metropolis-Hastings-Sampling
+Sei nun $\tau \sim LN(0,1)$. Ziehe aus der gemeinsamen Posteriori mittels Metropolis_Hastings.
+
+
+```{r}
+I<-500
+
+s0<-1
+a<-5
+b<-1
+n<-length(x)
+
+mu<-tau<-rep(NA,I+1)
+tau[1]<-1 # !
+mu[1]<-.1 # !
+
+log.fc.tau <- function(tau,n,sumxmu2)
+{
+  if (tau<0|tau>1)return(0)
+  return<-n*log(tau)/2-tau*sumxmu2/2+log(dlnorm(tau))
+  return(return)
+}
+```
+
+```{r mcmc, cache=TRUE}
+for (i in (1:I)+1)
+{
+  taustern <- rnorm(1,tau[i-1],.1)
+  sumxmu2<-sum((x-mu[i-1])^2)
+  logalpha<-log.fc.tau(taustern,n,sumxmu2)-log.fc.tau(tau[i-1],n,sumxmu2)
+  alpha<-exp(logalpha)
+  if (runif(1)<alpha)
+  {
+    tau[i]<-taustern
+  }
+  else
+  {
+     tau[i]<-tau[i-1]
+  }
+  
+  m<-tau[i]*sumx
+  s<-n*tau[i]+1/s0
+  mustern<-rnorm(1,m/s,sqrt(1/s))
+  logalpha <- log(post(mustern,sumx,spanne))-log(post(mu[i-1],sumx,spanne))
+  logalpha <- logalpha+log(dnorm(mu[i-1],m/s,sqrt(1/s)))-log(dnorm(mustern,m/s,sqrt(1/s)))
+ alpha<-exp(logalpha)
+ if(!is.na(alpha))if(!is.na(mustern))
+   if (runif(1)<alpha)
+  {
+    mu[i]<-mustern
+  }
+  else
+  {
+    mu[i]<-mu[i-1]
+  }
+}
+```
+
+```{r}
+tau<-tau[-1]
+mu<-mu[-1]
+
+plot(mu,type="l")
+plot(1/tau,type="l")
+plot(tau,type="l")
+plot(mu,tau)
+plot(mu[1:10],(1/tau)[1:10],type="s")
+plot(density(mu))
+plot(density(1/tau))
+
+hist(mu,breaks=100)
+print(mean(mu))
+print(mean(tau))
+```
+

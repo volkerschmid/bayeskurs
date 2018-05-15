@@ -1,0 +1,3 @@
+load("/Users/schmid/lehre/Bayes/bayeskurs/data/lungenkrebs-frauen.RData")
+ls()
+update.packages()

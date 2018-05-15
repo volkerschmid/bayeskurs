@@ -1,0 +1,53 @@
+---
+title: "Stunde 2"
+author: "Volker Schmid"
+date: "5 5 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Priori, Posteriori, Prädiktive Verteilung
+
+```{r}
+#source("Code/LearnBayes-discrete.R")
+```
+
+## Marginale und Bedingte Posteriori
+
+* Folien ab Seite 19
+* LearnBayes-discrete.R für 2D-Daten
+
+## Modellierung 
+
+* Folien ab Seite 27
+* LM
+* GLM
+* Hierarchische Modellierung
+
+## Lineares Modell
+
+```{r limo}
+n <- 50
+b0.true <- 7
+b1.true <- 2
+tau.true <- .01
+x <- 1:n
+y <- rnorm(n,b0.true+b1.true*x,sd=sqrt(1/tau.true))
+plot(x,y)
+
+print(lm(y~x))
+```
+
+## Poisson-Modellierung
+
+$$ f(y_i|\lambda) = \frac{\lambda_i^{y_i}}{y_i!}\exp{-\lambda_i}$$
+$$ \lambda_i=\exp(\alpha+\beta x_i) $$
+$$ \alpha \sim{\rm N}(0,v_\alpha^2)$$
+$$ \beta \sim{\rm N}(0,v_\beta^2)$$
+$$ p(\alpha,\beta|x,y) \propto \prod\exp(\alpha+\beta x_i)^{y_i}\exp(-\exp(\alpha+\beta x_i)) 
+\exp(-0.5v_a^{-2}\alpha^2) \exp(-0.5v_b^{-2}\beta^2) $$

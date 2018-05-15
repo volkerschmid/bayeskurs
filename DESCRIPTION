@@ -1,0 +1,18 @@
+Package: bayeskurs
+Type: Package
+Title: Bayes-Kurs
+Version: 0.3.1
+Date: 2017-12-13
+Author: Volker Schmid
+Authors@R: c(person("Volker", "Schmid", role = c("aut", "cre"),
+		     email = "volker.schmid@lmu.de"))
+Maintainer: Volker Schmid <volker.schmid@lmu.de>
+Description: Folien, Code und Übungen für Bayes-Kurse
+License: GPL
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
+Imports: Matrix, VGAM,  coda, miscTools, mnormt
+

@@ -1,0 +1,33 @@
+template:
+  params:
+    bootswatch: cerulean
+
+articles:
+- title: Einführung
+  contents:
+  - einfuehrung
+- title: Simulationsbasierte Posteriori-Inferenz
+  contents:
+  - sampling
+  - uebungsimplesamplen
+- title: Mehr zu MCMC
+  contents:
+  - samplingstrategien
+  - Konvergenzdiagnostik
+- title: Hamilton MC
+  contents:
+  - hmc
+- title: Hierarchische Modelle
+  contents:
+  - HierarchischeModelle
+- title: Modellwahl und Variablenselektion
+  contents:
+  - Modellwahl
+  - Variablenselektion
+- title: Modelle
+  contents:
+  - bruchpunktmodelle
+  - mischverteilungsmodelle
+- title: Reversible Jump MCMC
+  contents:
+  - rjmcmc

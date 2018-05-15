@@ -1,0 +1,146 @@
+---
+title: "Bayesianische Mischverteilungsmodelle"
+author: "Volker Schmid"
+date: "17. Juli 2017"
+output:
+  beamer_presentation:
+  keep_tex: false
+toc: true
+slide_level: 2
+vignette: >
+  %\VignetteIndexEntry{Bayesianische Mischverteilungsmodelle}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(bayeskurs)
+```
+
+# Bayesianische Mischverteilungsmodelle
+
+## Mischverteilungen 
+
+[//]: Zu ergänzen: EM-Algorithmus für MAP-Schätzer. Vorsicht: Fisch-Daten fast diskret 
+
+* (Normal-)Verteilungsannahme basiert in der Regel auf der Annahme, dass die Beobachtungen identisch verteilt sind, es also eine Verteilung der Grundgesamtheit gibt 
+* Alternative Annahme: Es gibt mehrere Gruppen in der Grundgesamheit, die alle die selbe Verteilungsklasse haben, aber unterschiedliche Parameter
+* Einfachster Fall: Mischung von Normalverteilungen
+
+## Mischung von Normalverteilungen {.allowframebreaks}
+
+```{r mvplot1}
+x <- seq(-10, 10, length=100)
+p <- 0.5*dnorm(x,-3,1) + 0.5*dnorm(x,3,1)
+plot(x,p, type="l")
+```
+
+* Natürlich sind auch verschiedene Varianzen und verschiedene Gewichte möglich
+
+```{r mvplot2}
+x <- seq(-10, 10, length=100)
+p <- 0.3*dnorm(x,-5,0.5) + 0.5*dnorm(x,1,1) + 0.2*dnorm(x,6,2)
+plot(x,p, type="l")
+```
+
+## Fragen
+
+* Welche Parameter und welche Gewichte haben die einzelnen Verteilungen?
+* Wieviele Mischverteilungen brauchen wir?
+* Zu welcher Verteilung gehört welche Beobachtung
+
+## Latente Klassen
+
+Idee der Modellierung: Führe latente Klassen $S_i$ ein
+
+$$ \begin{aligned}
+x_i | S_i & \sim N(\mu_{S_i},\sigma^2_{S_i})\\
+\mu_{j} &\sim N(\mu_0, \sigma^2_0)\\
+\sigma^2_j &\sim IG(a,b)\\
+p(S_i=j) &= \pi_j\\
+(\pi_1,\ldots,\pi_K) &\sim Diri(\alpha,\ldots,\alpha)
+\end{aligned} $$
+
+Dirichlet-Verteilung:
+$$ p(\pi_1,\ldots,\pi_K) \propto \prod \pi_i^{\alpha_i-1} $$
+
+## Full conditionals
+
+* Die full conditional von $\mu_j$ sind Normalverteilungen, wobei die $x_i$ mit $S_i=j$ eingehen
+* Analog ist die full conditional von $\sigma^2_j$ eine IG-Verteilung
+* $p(S_i=j)$ berechnet sich aus Dichte von $x_i$ mit $\mu_j$ und $\sigma^2_j$ (und Priori)
+* Full Conditional von $\mathbf{\pi}$ ist Dirichlet mit $(\alpha+n_1,\ldots,\alpha+n_k)$, wobei $n_j$ die aktuelle Anzahl der Beobachtungen in Klasse $j$ ist
+
+## Beispiel {.allowframebreaks}
+
+Länge von 256 Fischen (aus D. M. Titterington, A. F. M. Smith and U.E. Makov (1985) Statistical Analysis of Finite Mixture Distributions. Wiley.)
+
+```{r Fischdaten}
+data(fish, package="bayesmix")
+hist(fish$fish, freq=FALSE, n=22)
+lines(density(fish$fish))
+```
+
+## bayesmix-Paket {.allowframebreaks}
+
+```{r BMM}
+library(bayesmix)
+model <- BMMmodel(fish, k = 4,
+  initialValues = list(S0 = 2),
+  priors = list(kind = "independence",
+  parameter = "priorsFish", 
+  hierarchical = "tau"))
+```
+```{r jags model}
+print(model)
+```
+
+## JAGS 
+
+* **JAGS** oder **Just another Gibbs sampler** ist eine Software zur MCMC-Simulation. 
+* Definition der Modelle entspricht der bei WinBUGS bzw. OpenBUGS
+* Anbindung an R und andere Sprachen
+
+## Fortsetzung Beispiel {.allowframebreaks}
+
+```{r jagscontrol}
+control <- JAGScontrol(variables = c("mu", "tau", "eta",
+    "S"), burn.in = 1000, n.iter = 5000, seed = 10)
+```
+```{r jagsrun}
+z <- JAGSrun(fish, model = model, control = control)
+```
+
+```{r zsort}
+zSort <- Sort(z, by = "mu")
+zSort
+
+```
+
+## Medianmodell {.allowframebreaks}
+
+```{r medianmodel}
+postmed<-apply(zSort$results, 2, median)
+x<-seq(min(fish$fish), max(fish$fish), length=1000)
+d1 <- postmed[257]*dnorm(x, postmed[261], sqrt(postmed[265]))
+d2 <- postmed[258]*dnorm(x, postmed[262], sqrt(postmed[266]))
+d3 <- postmed[259]*dnorm(x, postmed[263], sqrt(postmed[267]))
+d4 <- postmed[260]*dnorm(x, postmed[264], sqrt(postmed[268]))
+d <- d1 + d2 + d3 + d4
+hist(fish$fish, freq=FALSE, n=22, ylim=c(0,max(d)))
+lines(x, d)
+lines(x, d1, col="grey")
+lines(x, d2, col="grey")
+lines(x, d3, col="grey")
+lines(x, d4, col="grey")
+
+```
+
+## Posteriori-Verteilung der Klassen {.allowframebreaks}
+
+```{r S}
+S <- apply(zSort$results[,1:256],2,
+     bioimagetools::table.n,4, percentage=TRUE)
+barplot(S, col=c("red","green","blue","orange"))
+```
+

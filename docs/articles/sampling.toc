@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{Einf\IeC {\"u}hrung}{3}{0}{1}
+\beamer@sectionintoc {2}{Monte-Carlo-Integration}{6}{0}{2}
+\beamer@sectionintoc {3}{Ziehen von Zufallsvariablen}{11}{0}{3}
+\beamer@sectionintoc {4}{Markov Chain Monte Carlo}{15}{0}{4}

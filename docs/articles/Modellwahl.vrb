@@ -1,0 +1,28 @@
+\frametitle{Modellvergleich}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Model=}\DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{, }\DataTypeTok{log.pred=}\KeywordTok{c}\NormalTok{(log.pred}\FloatTok{.1}\NormalTok{, log.pred}\FloatTok{.2}\NormalTok{, log.pred}\FloatTok{.3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Model  log.pred
+## 1     1 -131.6253
+## 2     2 -144.7554
+## 3     3 -132.9464
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{exp}\NormalTok{(log.pred}\FloatTok{.1} \NormalTok{-}\StringTok{ }\NormalTok{log.pred}\FloatTok{.3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.74751
+\end{verbatim}
+
+Nach Jeffreys \emph{beachtliche Anzeichen} für Modell 1 gegenüber Modell
+3.
+

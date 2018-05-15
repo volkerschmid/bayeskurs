@@ -1,0 +1,451 @@
+\documentclass[ignorenonframetext,]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+\ifxetex
+\usepackage{mathspec}
+\else
+\usepackage{fontspec}
+\fi
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight0.8\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+\let\insertpartnumber\relax
+\let\partname\relax
+\frame{\partpage}
+}
+\AtBeginSection{
+\ifbibliography
+\else
+\let\insertsectionnumber\relax
+\let\sectionname\relax
+\frame{\sectionpage}
+\fi
+}
+\AtBeginSubsection{
+\let\insertsubsectionnumber\relax
+\let\subsectionname\relax
+\frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+\title{Bayesianische Variablenselektion}
+\author{Volker Schmid}
+\date{\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{9}
+\tightlist
+\item
+  Juli 2017
+\end{enumerate}}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Reversible Jump MCMC
+(RJMCMC)}\label{reversible-jump-mcmc-rjmcmc}
+
+\begin{frame}{Modellwahl/Variablenwahl mit unterschiedlichen
+Dimensionen}
+
+Vergleichen wir zwei unterschiedliche Modelle
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(y = \alpha + \beta x + \epsilon\)
+\item
+  \(y = \alpha + \epsilon\)
+\end{enumerate}
+
+so lässt sich die Modellwahl auch als Variablenselektion mit
+Indikatorvariablen interpretieren. Im zweiten Modell ist die
+Indikatorvariable für \(\beta\) gleich 0.
+
+Im MCMC-Algorithmus sind also identisch:
+
+\begin{itemize}
+\tightlist
+\item
+  \(I=1 \to I=0\)
+\item
+  \(\beta \to 0\)
+\item
+  Modell 1 \(\to\) Modell 2
+\item
+  \(\theta=(\alpha,\beta) \to \theta^*=(\alpha)\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Reversible Jump MCMC}
+
+\begin{itemize}
+\tightlist
+\item
+  RJMCMC nach Green (1995)
+\item
+  Allgemein sind bei Reversible Jump verschiedene Parameterräume erlaubt
+\item
+  Zwischen den Parameterräumen müssen Abbildungen (reversible jumps)
+  möglich sein
+\item
+  Im obigen Beispiel:
+\end{itemize}
+
+\textbf{death step} \[ (\alpha,\beta) = (\alpha)\]
+
+\textbf{birth step}
+\[(\alpha) \to (\alpha,\beta) \text{ mit }\beta\sim \text{prior}\]
+
+\begin{itemize}
+\tightlist
+\item
+  Der Modellwechsel geht in die Akzeptanzwahrscheinlichkeit ein (auch
+  \emph{Metropolis-Hastings-Green}-Wahrscheinlichkeit).
+\item
+  Mit \(\theta\) alter Zustand und \(\theta^*\) Vorschlag
+\end{itemize}
+
+\[
+\alpha = \frac{f(y|\theta^*)}{f(y|\theta)}\frac{p(\theta^*)}{p(\theta)}
+\frac{q(\theta|\theta^*)}{q(\theta^*|\theta)}\left|J\right|
+\]
+
+wobei \(J\) die Jacobi-Matrix für den deterministischen Übergang von
+\(\theta \to \theta^*\) ist
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{RJMCMC Beispiel}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.predict<-function(Mod, X)}
+\NormalTok{\{}
+\NormalTok{j     =}\StringTok{ }\NormalTok{Mod[}\DecValTok{2}\NormalTok{]}
+\NormalTok{beta0 =}\StringTok{ }\NormalTok{Mod[}\DecValTok{3}\NormalTok{]}
+\NormalTok{beta1 =}\StringTok{ }\NormalTok{Mod[}\DecValTok{4}\NormalTok{]}
+\NormalTok{beta2 =}\StringTok{ }\NormalTok{Mod[}\DecValTok{5}\NormalTok{]}
+
+\NormalTok{P =}\StringTok{ }\DecValTok{0}\NormalTok{*X +}\StringTok{ }\NormalTok{beta0}
+\NormalTok{if (j >=}\StringTok{ }\DecValTok{2}\NormalTok{) \{P =}\StringTok{ }\NormalTok{P +}\StringTok{ }\NormalTok{X*beta1\}}
+\NormalTok{if (j >=}\StringTok{ }\DecValTok{3}\NormalTok{) \{P =}\StringTok{ }\NormalTok{P +}\StringTok{ }\NormalTok{(X^}\DecValTok{2}\NormalTok{)*beta2\}}
+
+\KeywordTok{return}\NormalTok{(P)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.perterb<-function(}\DataTypeTok{M=}\KeywordTok{c}\NormalTok{(-}\OtherTok{Inf}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{Qsd=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.01}\NormalTok{, }\FloatTok{0.001}\NormalTok{), }\DataTypeTok{LB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, -}\DecValTok{10}\NormalTok{, -}\DecValTok{2}\NormalTok{, -}\DecValTok{1} \NormalTok{), }\DataTypeTok{UB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1} \NormalTok{)  , }\DataTypeTok{data=}\KeywordTok{data.frame}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{100}\NormalTok{, }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)))}
+\NormalTok{\{}
+\CommentTok{# unpacking hte parameters}
+\NormalTok{LL    =}\StringTok{ }\NormalTok{M[}\DecValTok{1}\NormalTok{]}
+\NormalTok{j     =}\StringTok{ }\NormalTok{M[}\DecValTok{2}\NormalTok{]}
+\CommentTok{#beta0 = M[3]}
+\CommentTok{#beta1 = M[4]}
+\CommentTok{#beta2 = M[5]}
+\NormalTok{x     =}\StringTok{ }\NormalTok{data[,}\DecValTok{1}\NormalTok{]}
+\NormalTok{y     =}\StringTok{ }\NormalTok{data[,}\DecValTok{2}\NormalTok{]}
+
+\NormalTok{ORDER =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{3}\NormalTok{:(}\DecValTok{3}\NormalTok{+j}\DecValTok{-1}\NormalTok{), j)}
+
+\NormalTok{for (i in ORDER)}
+\NormalTok{\{}
+\NormalTok{M.prime =}\StringTok{ }\NormalTok{M                                           }\CommentTok{# make the proposal model}
+\NormalTok{M.prime[i] =}\StringTok{ }\NormalTok{M.prime[i] +}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=} \NormalTok{Qsd[i]) }\CommentTok{# add random noise to old model}
+\NormalTok{P =}\StringTok{ }\KeywordTok{g.predict}\NormalTok{(M.prime, x)                             }\CommentTok{# get predicted values}
+
+\NormalTok{LL.prime =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y-P, }\DataTypeTok{mean=} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{, }\DataTypeTok{log=}\NormalTok{T))      }\CommentTok{# compute loglikihood}
+\NormalTok{M.prime[}\DecValTok{1}\NormalTok{] =}\StringTok{ }\NormalTok{LL.prime                                 }\CommentTok{# save LL}
+
+\NormalTok{r =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)                                          }\CommentTok{# random uniform}
+\NormalTok{MH =}\StringTok{ }\KeywordTok{exp}\NormalTok{(LL.prime -}\StringTok{ }\NormalTok{LL)                               }\CommentTok{# Metropolis-hasting acceptance probability value}
+\NormalTok{if ((r <=}\StringTok{ }\NormalTok{MH) &}\StringTok{ }\NormalTok{(M.prime[i] >=}\StringTok{ }\NormalTok{LB[i]) &}\StringTok{ }\NormalTok{(M.prime[i] <=}\StringTok{ }\NormalTok{UB[i])  ) \{M =}\StringTok{ }\NormalTok{M.prime\}                            }\CommentTok{# if accepted and in bounds}
+
+\NormalTok{\}}
+\KeywordTok{return}\NormalTok{(M)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.birth<-function(}\DataTypeTok{M=}\KeywordTok{c}\NormalTok{(-}\OtherTok{Inf}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{Qsd=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.01}\NormalTok{, }\FloatTok{0.001}\NormalTok{), }\DataTypeTok{LB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, -}\DecValTok{10}\NormalTok{, -}\DecValTok{2}\NormalTok{, -}\DecValTok{1} \NormalTok{), }\DataTypeTok{UB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1} \NormalTok{)  , }\DataTypeTok{data=}\KeywordTok{data.frame}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{100}\NormalTok{, }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)))}
+\NormalTok{\{}
+\CommentTok{# unpacking hte parameters}
+\NormalTok{LL    =}\StringTok{ }\NormalTok{M[}\DecValTok{1}\NormalTok{]}
+\NormalTok{j     =}\StringTok{ }\NormalTok{M[}\DecValTok{2}\NormalTok{]}
+\NormalTok{x     =}\StringTok{ }\NormalTok{data[,}\DecValTok{1}\NormalTok{]}
+\NormalTok{y     =}\StringTok{ }\NormalTok{data[,}\DecValTok{2}\NormalTok{]}
+
+\NormalTok{if (j ==}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{M.prime =}\StringTok{ }\NormalTok{M                                           }\CommentTok{# make the proposal model}
+\NormalTok{M.prime[}\DecValTok{2}\NormalTok{] =}\StringTok{ }\DecValTok{2}
+\NormalTok{M.prime[}\DecValTok{4}\NormalTok{] =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DataTypeTok{min =} \NormalTok{LB[}\DecValTok{4}\NormalTok{], }\DataTypeTok{max =} \NormalTok{UB[}\DecValTok{4}\NormalTok{])       }\CommentTok{# propose from prior}
+\NormalTok{P =}\StringTok{ }\KeywordTok{g.predict}\NormalTok{(M.prime, x)                             }\CommentTok{# get predicted values}
+
+\NormalTok{LL.prime =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y-P, }\DataTypeTok{mean=} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{, }\DataTypeTok{log=}\NormalTok{T))      }\CommentTok{# compute loglikihood}
+\NormalTok{M.prime[}\DecValTok{1}\NormalTok{] =}\StringTok{ }\NormalTok{LL.prime                                 }\CommentTok{# save LL}
+
+\NormalTok{r =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)                                          }\CommentTok{# random uniform}
+\NormalTok{MH =}\StringTok{ }\KeywordTok{exp}\NormalTok{(LL.prime -}\StringTok{ }\NormalTok{LL)                               }\CommentTok{# Metropolis-hasting acceptance probability value}
+\NormalTok{if (r <=}\StringTok{ }\NormalTok{MH) \{M =}\StringTok{ }\NormalTok{M.prime\}                            }\CommentTok{# if accepted}
+
+\NormalTok{\}}
+
+\NormalTok{if (j ==}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{M.prime =}\StringTok{ }\NormalTok{M                                           }\CommentTok{# make the proposal model}
+\NormalTok{M.prime[}\DecValTok{2}\NormalTok{] =}\StringTok{ }\DecValTok{3}
+\NormalTok{M.prime[}\DecValTok{5}\NormalTok{] =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DataTypeTok{min =} \NormalTok{LB[}\DecValTok{5}\NormalTok{], }\DataTypeTok{max =} \NormalTok{UB[}\DecValTok{5}\NormalTok{])       }\CommentTok{# propose from prior}
+\NormalTok{P =}\StringTok{ }\KeywordTok{g.predict}\NormalTok{(M.prime, x)                             }\CommentTok{# get predicted values}
+
+\NormalTok{LL.prime =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y-P, }\DataTypeTok{mean=} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{, }\DataTypeTok{log=}\NormalTok{T))      }\CommentTok{# compute loglikihood}
+\NormalTok{M.prime[}\DecValTok{1}\NormalTok{] =}\StringTok{ }\NormalTok{LL.prime                                 }\CommentTok{# save LL}
+
+\NormalTok{r =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)                                          }\CommentTok{# random uniform}
+\NormalTok{MH =}\StringTok{ }\KeywordTok{exp}\NormalTok{(LL.prime -}\StringTok{ }\NormalTok{LL)                               }\CommentTok{# Metropolis-hasting acceptance probability value}
+\NormalTok{if (r <=}\StringTok{ }\NormalTok{MH) \{M =}\StringTok{ }\NormalTok{M.prime\}                            }\CommentTok{# if accepted}
+
+\NormalTok{\}}
+
+\KeywordTok{return}\NormalTok{(M)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.death<-function(}\DataTypeTok{M=}\KeywordTok{c}\NormalTok{(-}\OtherTok{Inf}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.0}\NormalTok{), }\DataTypeTok{Qsd=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.01}\NormalTok{, }\FloatTok{0.001}\NormalTok{), }\DataTypeTok{LB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, -}\DecValTok{10}\NormalTok{, -}\DecValTok{2}\NormalTok{, -}\DecValTok{1} \NormalTok{), }\DataTypeTok{UB =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1} \NormalTok{)  , }\DataTypeTok{data=}\KeywordTok{data.frame}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{100}\NormalTok{, }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)))}
+\NormalTok{\{}
+\CommentTok{# unpacking hte parameters}
+\NormalTok{LL    =}\StringTok{ }\NormalTok{M[}\DecValTok{1}\NormalTok{]}
+\NormalTok{j     =}\StringTok{ }\NormalTok{M[}\DecValTok{2}\NormalTok{]}
+\NormalTok{x     =}\StringTok{ }\NormalTok{data[,}\DecValTok{1}\NormalTok{]}
+\NormalTok{y     =}\StringTok{ }\NormalTok{data[,}\DecValTok{2}\NormalTok{]}
+
+\NormalTok{if (j ==}\StringTok{ }\DecValTok{3}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{M.prime =}\StringTok{ }\NormalTok{M                                           }\CommentTok{# make the proposal model}
+\NormalTok{M.prime[}\DecValTok{2}\NormalTok{] =}\StringTok{ }\DecValTok{2}
+\NormalTok{M.prime[}\DecValTok{5}\NormalTok{] =}\StringTok{ }\DecValTok{0}                                        \CommentTok{# propose from prior}
+\NormalTok{P =}\StringTok{ }\KeywordTok{g.predict}\NormalTok{(M.prime, x)                             }\CommentTok{# kill the parameter}
+
+\NormalTok{LL.prime =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y-P, }\DataTypeTok{mean=} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{, }\DataTypeTok{log=}\NormalTok{T))      }\CommentTok{# compute loglikihood}
+\NormalTok{M.prime[}\DecValTok{1}\NormalTok{] =}\StringTok{ }\NormalTok{LL.prime                                 }\CommentTok{# save LL}
+
+\NormalTok{r =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)                                          }\CommentTok{# random uniform}
+\NormalTok{MH =}\StringTok{ }\KeywordTok{exp}\NormalTok{(LL.prime -}\StringTok{ }\NormalTok{LL)                               }\CommentTok{# Metropolis-hasting acceptance probability value}
+\NormalTok{if (r <=}\StringTok{ }\NormalTok{MH) \{M =}\StringTok{ }\NormalTok{M.prime\}                            }\CommentTok{# if accepted}
+
+\NormalTok{\}}
+
+\NormalTok{if (j ==}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\NormalTok{\{}
+\NormalTok{M.prime =}\StringTok{ }\NormalTok{M                                           }\CommentTok{# make the proposal model}
+\NormalTok{M.prime[}\DecValTok{2}\NormalTok{] =}\StringTok{ }\DecValTok{1}
+\NormalTok{M.prime[}\DecValTok{4}\NormalTok{] =}\StringTok{ }\DecValTok{0}                                        \CommentTok{# kill the parameter}
+\NormalTok{P =}\StringTok{ }\KeywordTok{g.predict}\NormalTok{(M.prime, x)                             }\CommentTok{# get p}
+
+\NormalTok{LL.prime =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(y-P, }\DataTypeTok{mean=} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd=}\DecValTok{1}\NormalTok{, }\DataTypeTok{log=}\NormalTok{T))      }\CommentTok{# compute loglikihood}
+\NormalTok{M.prime[}\DecValTok{1}\NormalTok{] =}\StringTok{ }\NormalTok{LL.prime                                 }\CommentTok{# save LL}
+
+\NormalTok{r =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)                                          }\CommentTok{# random uniform}
+\NormalTok{MH =}\StringTok{ }\KeywordTok{exp}\NormalTok{(LL.prime -}\StringTok{ }\NormalTok{LL)                               }\CommentTok{# Metropolis-hasting acceptance probability value}
+\NormalTok{if (r <=}\StringTok{ }\NormalTok{MH) \{M =}\StringTok{ }\NormalTok{M.prime\}                            }\CommentTok{# if accepted}
+
+\NormalTok{\}}
+
+\KeywordTok{return}\NormalTok{(M)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.explore<-function(old, d)}
+\NormalTok{\{}
+\NormalTok{Qsd. =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.01}\NormalTok{, }\FloatTok{0.001}\NormalTok{)}
+\NormalTok{LB.  =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, -}\DecValTok{10}\NormalTok{, -}\DecValTok{2}\NormalTok{, -}\DecValTok{1} \NormalTok{)}
+\NormalTok{UB.  =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{1} \NormalTok{)}
+
+\NormalTok{move.type =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{) }\CommentTok{# the type of move i.e., perterb, birth, death}
+
+\NormalTok{if (move.type ==}\StringTok{ }\DecValTok{1}\NormalTok{) \{old =}\StringTok{ }\KeywordTok{g.perterb}\NormalTok{(}\DataTypeTok{M=}\NormalTok{old, }\DataTypeTok{Qsd =}\NormalTok{Qsd., }\DataTypeTok{LB =} \NormalTok{LB., }\DataTypeTok{UB=}\NormalTok{UB., }\DataTypeTok{data=} \NormalTok{d)\}}
+\NormalTok{if (move.type ==}\StringTok{ }\DecValTok{2}\NormalTok{) \{old =}\StringTok{ }\KeywordTok{g.birth}\NormalTok{(}\DataTypeTok{M=}\NormalTok{old,  }\DataTypeTok{Qsd =}\NormalTok{Qsd., }\DataTypeTok{LB =} \NormalTok{LB., }\DataTypeTok{UB=}\NormalTok{UB., }\DataTypeTok{data =} \NormalTok{d)\}}
+\NormalTok{if (move.type ==}\StringTok{ }\DecValTok{3}\NormalTok{) \{old =}\StringTok{ }\KeywordTok{g.death}\NormalTok{(}\DataTypeTok{M=}\NormalTok{old, }\DataTypeTok{Qsd =}\NormalTok{Qsd., }\DataTypeTok{LB =} \NormalTok{LB., }\DataTypeTok{UB=}\NormalTok{UB., }\DataTypeTok{data =} \NormalTok{d )\}}
+
+\KeywordTok{return}\NormalTok{(old)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g.rjMCMC<-function(}\DataTypeTok{Ndat =} \DecValTok{100}\NormalTok{, }\DataTypeTok{Nsamp =} \DecValTok{25000}\NormalTok{, }\DataTypeTok{BURN =} \DecValTok{1000}\NormalTok{)}
+\NormalTok{\{}
+\CommentTok{#+ (1:Ndat)*0.75}
+\NormalTok{beta0 =}\StringTok{ }\DecValTok{3}
+\NormalTok{beta1 =}\StringTok{ }\FloatTok{0.1}
+\NormalTok{beta2 =}\StringTok{ }\DecValTok{0}
+
+\NormalTok{data =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =} \DecValTok{1}\NormalTok{:Ndat, }\DataTypeTok{y =} \NormalTok{beta0  +}\KeywordTok{rnorm}\NormalTok{(Ndat)+}\StringTok{ }\NormalTok{(}\DecValTok{1}\NormalTok{:Ndat)*beta1  ) }\CommentTok{# the simulated data}
+
+\KeywordTok{plot}\NormalTok{(data[,}\DecValTok{1}\NormalTok{], data[,}\DecValTok{2}\NormalTok{], }\DataTypeTok{xlab=}\StringTok{"x"}\NormalTok{, }\DataTypeTok{ylab=}\StringTok{"y"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Simulated Data"}\NormalTok{)}
+\KeywordTok{lines}\NormalTok{(}\DecValTok{1}\NormalTok{:Ndat,beta0  +}\StringTok{  }\NormalTok{(}\DecValTok{1}\NormalTok{:Ndat)*beta1, }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{3} \NormalTok{)}
+\KeywordTok{points}\NormalTok{(data[,}\DecValTok{1}\NormalTok{], data[,}\DecValTok{2}\NormalTok{])}
+
+\NormalTok{Mod.old  =}\StringTok{ }\KeywordTok{c}\NormalTok{(-}\OtherTok{Inf}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+\NormalTok{for(i in }\DecValTok{1}\NormalTok{:BURN) }\CommentTok{# the burn in}
+\NormalTok{\{}
+\NormalTok{Mod.old =}\StringTok{ }\KeywordTok{g.explore}\NormalTok{(}\DataTypeTok{old =} \NormalTok{Mod.old, }\DataTypeTok{d =} \NormalTok{data)}
+\NormalTok{\}}
+\KeywordTok{print}\NormalTok{(Mod.old)}
+
+\NormalTok{REC =}\StringTok{ }\NormalTok{Mod.old}
+\NormalTok{for(i in }\DecValTok{1}\NormalTok{:(Nsamp}\DecValTok{-1}\NormalTok{)) }\CommentTok{# the burn in}
+\NormalTok{\{}
+\NormalTok{Mod.old =}\StringTok{ }\KeywordTok{g.explore}\NormalTok{(}\DataTypeTok{old =} \NormalTok{Mod.old, }\DataTypeTok{d =} \NormalTok{data)}
+\NormalTok{REC =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(REC, Mod.old)}
+\KeywordTok{rownames}\NormalTok{(REC) =}\StringTok{ }\OtherTok{NULL}
+\NormalTok{\}}
+
+\KeywordTok{print}\NormalTok{(}\KeywordTok{table}\NormalTok{(REC[,}\DecValTok{2}\NormalTok{]))}
+
+\NormalTok{x =}\StringTok{ }\DecValTok{16}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mar =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{), }\DataTypeTok{oma =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\KeywordTok{layout}\NormalTok{(}\DataTypeTok{mat =} \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{), }\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{, }\DataTypeTok{ncol=}\DecValTok{3}\NormalTok{, }\DataTypeTok{byrow=}\NormalTok{T) )}
+
+\NormalTok{REC =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(REC, }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\CommentTok{# just to make the ploting easier}
+
+\NormalTok{H1 =}\StringTok{ }\KeywordTok{hist}\NormalTok{(REC[,}\DecValTok{3}\NormalTok{],}\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(-}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{1001}\NormalTok{),  }\DataTypeTok{plot=}\NormalTok{F)}
+\NormalTok{H2 =}\StringTok{ }\KeywordTok{hist}\NormalTok{(REC[REC[,}\DecValTok{2}\NormalTok{] >=}\StringTok{ }\DecValTok{2} \NormalTok{,}\DecValTok{4}\NormalTok{], }\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(-}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{1001}\NormalTok{), }\DataTypeTok{plot=}\NormalTok{F)}
+\NormalTok{H3 =}\StringTok{ }\KeywordTok{hist}\NormalTok{(REC[REC[,}\DecValTok{2}\NormalTok{] >=}\StringTok{ }\DecValTok{3} \NormalTok{,}\DecValTok{5}\NormalTok{], }\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(-}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{1001}\NormalTok{), }\DataTypeTok{plot=}\NormalTok{F)}
+
+\KeywordTok{plot}\NormalTok{(H1$mids, H1$den, }\DataTypeTok{type=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{xlab=}\StringTok{"Beta 0"}\NormalTok{, }\DataTypeTok{ylab=} \StringTok{"P(Beta 0)"}\NormalTok{,}\DataTypeTok{xaxs=}\StringTok{"i"}\NormalTok{, }\DataTypeTok{yaxs=}\StringTok{"i"}\NormalTok{)}
+\KeywordTok{polygon}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{c}\NormalTok{(H1$mids[}\DecValTok{1}\NormalTok{], H1$mids, H1$mids[}\KeywordTok{length}\NormalTok{(H1$mids)] ), }\DataTypeTok{y=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, H1$den, }\DecValTok{0}\NormalTok{), }\DataTypeTok{col=}\StringTok{"grey"}\NormalTok{, }\DataTypeTok{border=}\NormalTok{F  )}
+\KeywordTok{abline}\NormalTok{( }\DataTypeTok{v =} \NormalTok{beta0, }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{, }\DataTypeTok{lty=}\DecValTok{2}  \NormalTok{)}
+
+\KeywordTok{plot}\NormalTok{(H2$mids, H2$den, }\DataTypeTok{type=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{xlab=}\StringTok{"Beta 1"}\NormalTok{, }\DataTypeTok{ylab=} \StringTok{"P(Beta 1)"}\NormalTok{,}\DataTypeTok{xaxs=}\StringTok{"i"}\NormalTok{, }\DataTypeTok{yaxs=}\StringTok{"i"}\NormalTok{)}
+\KeywordTok{polygon}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{c}\NormalTok{(H2$mids[}\DecValTok{1}\NormalTok{], H2$mids, H2$mids[}\KeywordTok{length}\NormalTok{(H2$mids)] ), }\DataTypeTok{y=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, H2$den, }\DecValTok{0}\NormalTok{), }\DataTypeTok{col=}\StringTok{"grey"}\NormalTok{, }\DataTypeTok{border=}\NormalTok{F  )}
+\KeywordTok{abline}\NormalTok{( }\DataTypeTok{v =} \NormalTok{beta1, }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{, }\DataTypeTok{lty=}\DecValTok{2}  \NormalTok{)}
+
+\KeywordTok{plot}\NormalTok{(H3$mids, H3$den, }\DataTypeTok{type=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{xlab=}\StringTok{"Beta 2"}\NormalTok{, }\DataTypeTok{ylab=} \StringTok{"P(Beta 2)"}\NormalTok{,}\DataTypeTok{xaxs=}\StringTok{"i"}\NormalTok{, }\DataTypeTok{yaxs=}\StringTok{"i"}\NormalTok{)}
+\KeywordTok{polygon}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{c}\NormalTok{(H3$mids[}\DecValTok{1}\NormalTok{], H3$mids, H3$mids[}\KeywordTok{length}\NormalTok{(H3$mids)] ), }\DataTypeTok{y=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, H3$den, }\DecValTok{0}\NormalTok{), }\DataTypeTok{col=}\StringTok{"grey"}\NormalTok{, }\DataTypeTok{border=}\NormalTok{F  )}
+\KeywordTok{abline}\NormalTok{( }\DataTypeTok{v =} \NormalTok{beta2, }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{, }\DataTypeTok{lty=}\DecValTok{2}  \NormalTok{)}
+
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{RJMCMC Beispiel Ergebnisse}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{g.rjMCMC}\NormalTok{(}\DataTypeTok{Ndat =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rjmcmc_files/figure-beamer/unnamed-chunk-7-1.pdf}
+
+\begin{verbatim}
+## [1] -26.258767   1.000000   4.350712   0.000000   0.000000
+## 
+##     1     2 
+## 24352   648
+\end{verbatim}
+
+\includegraphics{rjmcmc_files/figure-beamer/unnamed-chunk-7-2.pdf}
+
+\end{frame}
+
+\end{document}

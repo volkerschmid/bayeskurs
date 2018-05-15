@@ -1,0 +1,203 @@
+
+
+  g.predict<-function(Mod, X)
+{
+  j     = Mod[2]
+  beta0 = Mod[3]
+  beta1 = Mod[4]
+  beta2 = Mod[5]
+  
+  P = 0*X + beta0
+  if (j >= 2) {P = P + X*beta1}
+  if (j >= 3) {P = P + (X^2)*beta2}
+  
+  return(P)
+}
+
+g.perterb<-function(M=c(-Inf, 3, 0, 0, 0), Qsd=c(0, 0, 0.1, 0.01, 0.001), LB = c(0, 1, -10, -2, -1 ), UB = c(0, 1, 10, 2, 1 )  , data=data.frame(1:100, rnorm(100)))
+{
+  # unpacking hte parameters
+  LL    = M[1]
+  j     = M[2]
+  #beta0 = M[3]
+  #beta1 = M[4]
+  #beta2 = M[5]
+  x     = data[,1]
+  y     = data[,2]
+  
+  ORDER = sample(3:(3+j-1), j)
+  
+  for (i in ORDER)
+  {
+    M.prime = M                                           # make the proposal model
+    M.prime[i] = M.prime[i] + rnorm(1, mean = 0, sd= Qsd[i]) # add random noise to old model
+    P = g.predict(M.prime, x)                             # get predicted values
+    
+    LL.prime = sum(dnorm(y-P, mean= 0, sd=1, log=T))      # compute loglikihood
+    M.prime[1] = LL.prime                                 # save LL
+    
+    r = runif(1)                                          # random uniform
+    MH = exp(LL.prime - LL)                               # Metropolis-hasting acceptance probability value
+    if ((r <= MH) & (M.prime[i] >= LB[i]) & (M.prime[i] <= UB[i])  ) {M = M.prime}                            # if accepted and in bounds
+    
+  }
+  return(M)
+}
+
+g.birth<-function(M=c(-Inf, 1, 0, 0, 0), Qsd=c(0, 0, 0.1, 0.01, 0.001), LB = c(0, 1, -10, -2, -1 ), UB = c(0, 1, 10, 2, 1 )  , data=data.frame(1:100, rnorm(100)))
+{
+  # unpacking hte parameters
+  LL    = M[1]
+  j     = M[2]
+  x     = data[,1]
+  y     = data[,2]
+  
+  if (j == 1)
+  {
+    M.prime = M                                           # make the proposal model
+    M.prime[2] = 2
+    M.prime[4] = runif(1, min = LB[4], max = UB[4])       # propose from prior
+    P = g.predict(M.prime, x)                             # get predicted values
+    
+    LL.prime = sum(dnorm(y-P, mean= 0, sd=1, log=T))      # compute loglikihood
+    M.prime[1] = LL.prime                                 # save LL
+    
+    r = runif(1)                                          # random uniform
+    MH = exp(LL.prime - LL)                               # Metropolis-hasting acceptance probability value
+    if (r <= MH) {M = M.prime}                            # if accepted
+    
+  }
+  
+  if (j == 2)
+  {
+    M.prime = M                                           # make the proposal model
+    M.prime[2] = 3
+    M.prime[5] = runif(1, min = LB[5], max = UB[5])       # propose from prior
+    P = g.predict(M.prime, x)                             # get predicted values
+    
+    LL.prime = sum(dnorm(y-P, mean= 0, sd=1, log=T))      # compute loglikihood
+    M.prime[1] = LL.prime                                 # save LL
+    
+    r = runif(1)                                          # random uniform
+    MH = exp(LL.prime - LL)                               # Metropolis-hasting acceptance probability value
+    if (r <= MH) {M = M.prime}                            # if accepted
+    
+  }
+  
+  return(M)
+}
+
+g.death<-function(M=c(-Inf, 2, 1, 0.5, 0.0), Qsd=c(0, 0, 0.1, 0.01, 0.001), LB = c(0, 1, -10, -2, -1 ), UB = c(0, 1, 10, 2, 1 )  , data=data.frame(1:100, rnorm(100)))
+{
+  # unpacking hte parameters
+  LL    = M[1]
+  j     = M[2]
+  x     = data[,1]
+  y     = data[,2]
+  
+  if (j == 3)
+  {
+    M.prime = M                                           # make the proposal model
+    M.prime[2] = 2
+    M.prime[5] = 0                                        # propose from prior
+    P = g.predict(M.prime, x)                             # kill the parameter
+    
+    LL.prime = sum(dnorm(y-P, mean= 0, sd=1, log=T))      # compute loglikihood
+    M.prime[1] = LL.prime                                 # save LL
+    
+    r = runif(1)                                          # random uniform
+    MH = exp(LL.prime - LL)                               # Metropolis-hasting acceptance probability value
+    if (r <= MH) {M = M.prime}                            # if accepted
+    
+  }
+  
+  if (j == 2)
+  {
+    M.prime = M                                           # make the proposal model
+    M.prime[2] = 1
+    M.prime[4] = 0                                        # kill the parameter
+    P = g.predict(M.prime, x)                             # get p
+    
+    LL.prime = sum(dnorm(y-P, mean= 0, sd=1, log=T))      # compute loglikihood
+    M.prime[1] = LL.prime                                 # save LL
+    
+    r = runif(1)                                          # random uniform
+    MH = exp(LL.prime - LL)                               # Metropolis-hasting acceptance probability value
+    if (r <= MH) {M = M.prime}                            # if accepted
+    
+  }
+  
+  return(M)
+}
+
+g.explore<-function(old, d)
+{
+  Qsd. = c(0, 0, 0.1, 0.01, 0.001)
+  LB.  = c(0, 1, -10, -2, -1 )
+  UB.  = c(0, 1, 10, 2, 1 )
+  
+  move.type = sample(1:3, 1) # the type of move i.e., perterb, birth, death
+  
+  if (move.type == 1) {old = g.perterb(M=old, Qsd =Qsd., LB = LB., UB=UB., data= d)}
+  if (move.type == 2) {old = g.birth(M=old,  Qsd =Qsd., LB = LB., UB=UB., data = d)}
+  if (move.type == 3) {old = g.death(M=old, Qsd =Qsd., LB = LB., UB=UB., data = d )}
+  
+  return(old)
+}
+
+g.rjMCMC<-function(Ndat = 100, Nsamp = 25000, BURN = 1000)
+{
+  #+ (1:Ndat)*0.75
+  beta0 = 3
+  beta1 = 0.1
+  beta2 = 0
+  
+  data = data.frame(x = 1:Ndat, y = beta0  +rnorm(Ndat)+ (1:Ndat)*beta1  ) # the simulated data
+  
+  plot(data[,1], data[,2], xlab="x", ylab="y", main = "Simulated Data")
+  lines(1:Ndat,beta0  +  (1:Ndat)*beta1, col="blue", lwd=3 )
+  points(data[,1], data[,2])
+  
+  Mod.old  = c(-Inf, 1, 4, 0, 0)
+  
+  for(i in 1:BURN) # the burn in
+  {
+    Mod.old = g.explore(old = Mod.old, d = data)
+  }
+  print(Mod.old)
+  
+  REC = Mod.old
+  for(i in 1:(Nsamp-1)) # the burn in
+  {
+    Mod.old = g.explore(old = Mod.old, d = data)
+    REC = rbind(REC, Mod.old)
+    rownames(REC) = NULL
+  }
+  
+  print(table(REC[,2]))
+  
+  x = 16
+  par(mar = c(4,4,1,1), oma = c(1,1,1,1))
+  layout(mat = matrix(c(1, 2, 3), nrow=1, ncol=3, byrow=T) )
+  
+  REC = rbind(REC, c(0, 3, 0,0,0)) # just to make the ploting easier
+  
+  H1 = hist(REC[,3],breaks = seq(-10, 10, length.out = 1001),  plot=F)
+  H2 = hist(REC[REC[,2] >= 2 ,4], breaks = seq(-2, 2, length.out = 1001), plot=F)
+  H3 = hist(REC[REC[,2] >= 3 ,5], breaks = seq(-1, 1, length.out = 1001), plot=F)
+  
+  plot(H1$mids, H1$den, type="n", xlab="Beta 0", ylab= "P(Beta 0)",xaxs="i", yaxs="i")
+  polygon(x=c(H1$mids[1], H1$mids, H1$mids[length(H1$mids)] ), y=c(0, H1$den, 0), col="grey", border=F  )
+  abline( v = beta0, col="blue", lwd=2, lty=2  )
+  
+  plot(H2$mids, H2$den, type="n", xlab="Beta 1", ylab= "P(Beta 1)",xaxs="i", yaxs="i")
+  polygon(x=c(H2$mids[1], H2$mids, H2$mids[length(H2$mids)] ), y=c(0, H2$den, 0), col="grey", border=F  )
+  abline( v = beta1, col="blue", lwd=2, lty=2  )
+  
+  plot(H3$mids, H3$den, type="n", xlab="Beta 2", ylab= "P(Beta 2)",xaxs="i", yaxs="i")
+  polygon(x=c(H3$mids[1], H3$mids, H3$mids[length(H3$mids)] ), y=c(0, H3$den, 0), col="grey", border=F  )
+  abline( v = beta2, col="blue", lwd=2, lty=2  )
+  
+}
+g.rjMCMC(Ndat = 20)
+

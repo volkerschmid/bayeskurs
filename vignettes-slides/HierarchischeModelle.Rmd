@@ -1,0 +1,748 @@
+---
+title: "Hierarchische Modelle"
+author: "Volker Schmid"
+date: "19./26. Juni 2017"
+output:
+  beamer_presentation:
+    keep_tex: false
+    toc: true
+    slide_level: 2
+vignette: >
+  %\VignetteIndexEntry{Hierarchische Modelle mit MCMC, Empirischem Bayes und INLA}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+```
+
+# Hierarchische Modelle
+## Hierarchische Modelle
+
+Ein sogenanntes hierarchisches Modell umfasst mehrere Schichten, oft drei:
+
+* Level 1: Datenmodell, Definition der Likelihood
+* Level 2: Priori-Modell der unbekannten Parameter
+* Level 3: (Hyper-)Prioris der Prioriparameter in Level 2
+
+## Beispiel: Zeitreihe mit Saison-Effekt {.allowframebreaks}
+
+* Anzahl von getöteten oder schwer verletzten Autofahrern in England von Januar 1969 bis Dezember 1984
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#install.packages("INLA", repos="https://inla.r-inla-download.org/R/stable")
+library(INLA)
+data(Drivers)
+T<-192
+Drivers<-Drivers[1:T,] # letztes Jahr enthält keine Daten, nur für Prädiktion
+plot(Drivers$trend,Drivers$y, type="l", xlab="Zeit", ylab="Anzahl")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+plot(density(sqrt(Drivers$y[Drivers$belt==0])), ylim=c(0,.15), 
+     xlim=c(25,55), main="", xlab="")
+lines(density(sqrt(Drivers$y[Drivers$belt==1])),lty=2)
+legend(47,.14,lty=1:2,legend=c("belt=F","belt=T"))
+```
+
+* Klarer Saisonaler Effekt
+* Eventuell Trend über die Jahre
+* Einfluß des Sicherheitsgurts 
+
+## Datenmodell 
+
+* wir nehmen $\sqrt{y}$ als normalverteilt an
+
+$$ 
+\sqrt{y_i} \sim N(\mu_i, \sigma^2); i=1,\ldots,T=192 
+$$
+
+* wir teilen den Erwartungswert $\mu_i$ in verschiedene Effekte auf:
+
+$$
+\mu_i = \alpha + \beta x_i + \gamma_i + \delta_i
+$$ 
+
+mit $i$ Monat, $x_i$ Dummyvariable Gurtpflicht ja/nein.
+
+## Priori-Modell - Zeittrend {.allowframebreaks}
+
+* Lineares Modell wäre vermutlich falsch
+* Parametrische Modellierung eventuell möglich, aber welches Modell?
+* Idee: Dummykodierung, ein Parameter pro Monat 
+* Aber: zu viele Parameter
+* Idee: Aufeinander folgende Monate haben ähnliche Parameter
+* Random Walk-Priori (1. Ordnung)
+
+$$ 
+\gamma_i|\gamma_{i-1},\tau_c \sim N(\gamma_{i-1},\tau_c^{-1}); j=2,\ldots,T; \;p(\gamma_1)\propto const.$$
+
+Es gilt:
+$$
+\gamma|\tau_c \sim N_T\left(0,(\tau_c Q_c)^{-1}\right)
+$$
+
+mit 
+$$Q_c = \left(\begin{array}{rrrrrr}
+ 1 & -1 &  &  &  &  \\
+-1 &  2 & -1 &  &  & \\
+  & -1 &  2 & -1     &  & \\
+  &  & \ddots & \ddots & \ddots & \\
+  & &  & -1 & 2 & -1\\
+ &  &  &  & -1 & 1
+\end{array}\right)
+$$
+(fehlende Einträge sind 0)
+
+```{r}
+library(Matrix)
+Qc <- Matrix::sparseMatrix(i = c(1:T,1:(T-1)),
+        j=c(1:T,2:T), 
+        x=c(1,rep(2,T-2),1,rep(-1,T-1)),
+        symmetric = TRUE)
+image(Qc)
+```
+
+## Priorimodell - Saisontrend {.allowframebreaks}
+
+* Möglich wäre z.B. parametrische Sinus-Kurve, aber vermutlich zu unflexibel
+* Sehr flexibel: Dummykodierung für jeden Monat. Aber: Viele Parameter, zu wenig Information
+* Idee: Gleicher Monat im Folgenden Jahr hat ähnlichen Parameter. Die Summe über $m=12$ Monate ist daher ähnlich (normal)verteilt. Formuliert als Priori-Information:
+
+$$ \begin{aligned}
+p(\delta|\tau_d)&\propto (\tau_d^{T-m+1})/2\cdot\\ &\cdot\exp\left(-\frac{\tau_d}{2}\sum_{i=1}^{T-m+1}(\delta_i+\delta_{i+1}+\ldots+\delta_{i+m-1})^2\right)
+\end{aligned}
+$$
+
+* Es lässt sich zeigen:
+$$ \delta|\tau_d \sim N_T\left(0,(\tau_d Q_d)^{-1}\right)$$
+mit 
+
+$$Q_d=\left(\begin{array}{cccccccccc}
+1 & 1 & 1 & \cdots & 1 & 1 &  &  &  & \\
+1 & 2 & 2 & \cdots & 2 & 2 & 1 &  &  & \\
+1 & 2 & 3 & \cdots & 3 & 3 & 2 & 1 &  & \\
+\vdots & \vdots & \vdots & \ddots \\
+1 & 2 & 3 & \cdots & 11 & 12 & 11 & 10 & \cdots \\
+& 1 & 2 & 3 & \cdots & 11 & 12 & 11 & 10 & \cdots \\
+& & \ddots & \ddots & \ddots & \ddots & \ddots & \ddots & \ddots & \\
+\end{array}\right)$$
+
+```{r}
+Qd <- Matrix::sparseMatrix(i=T,j=T,x=0,
+        symmetric = TRUE)
+EinsM<-Matrix::sparseMatrix(i=rep(1:12,12),
+        j=rep(1:12,each=12), x=1)
+for (i in 1:(T-12))
+  Qd[i+(0:11),i+(0:11)]<-Qd[i+(0:11),i+(0:11)]+EinsM
+image(Qd)
+```
+
+## Priori-Modell - Intercept und Kovariableneffekt {.allowframebreaks}
+
+* Keine Priori-Information
+
+$$p(\alpha)\propto const. \Leftrightarrow ''\alpha\sim N\left(0,0^{-1}\right)'' $$
+
+* Analog $p(\beta)\propto const.$
+* Also: Alle Effekte a priori normalverteilt, enthalten unbekannte Präzisionsparameter $\tau_c$ bzw. $\tau_d$
+* Gemeinsame Priori von $\theta=(\alpha,\beta,\gamma,\delta)$ hat Form
+
+$$ 
+\begin{aligned}
+\theta|\tau &\sim N_{2+2T}(0,Q(\tau)^{-1})\\
+Q(\tau)&=\left(\begin{array}{cccc}
+0&0&0&0\\
+0&0&0&0\\
+0&0&\tau_cQ_c &0\\
+0&0&0&\tau_dQ_d\\
+\end{array}\right)
+\end{aligned}
+$$
+
+## Hyperpriors
+
+* Die Präzisionsparameter in den Prioris steuern, wie stark die Regularisierung des Zeit- bzw. Saisontrends ist
+* Diese Parameter der Prioris, *Hyperparameter*, wollen wir nicht vorgeben, sondern mitschätzen
+* Jeder Parameter, der geschätzt werden soll, braucht eine Priori, hier *Hyperpriori* genannt
+
+$$ \begin{aligned}
+\tau_c\sim Ga(a_c,b_c)\\
+\tau_d\sim Ga(a_d,b_d)
+\end{aligned} $$
+
+* Außerdem brauchen wir noch eine Priori für $\sigma^2\sim IG(a_s,b_s)$
+
+## Posteriori
+
+Sei $y^*=\sqrt{y}$
+
+$$ \begin{aligned}
+p(\theta,\tau|y^*) &\propto f(y^*|\theta) p(\theta,\tau)\\
+&\propto f(y^*|\theta) p(\theta|\tau) p(\tau) \\
+&\propto \prod_{i=1}^T \sigma^{-1} \exp\left(-\frac{1}{2\sigma^2}(y_i^*-\alpha-\beta x_i-\gamma_i+\delta_i )^2\right) \cdot\\
+&\cdot \tau_c^{(T-1)/2} \exp\left(-\frac{\tau_c}{2}\gamma^TQ_c\gamma\right)
+\tau_d^{(T-m+1)/2} \exp\left(-\frac{\tau_d}{2}\delta^TQ_d\delta\right)\\
+&\cdot \tau_c^{a_c-1}\exp(-\tau_c b_c)\cdot \tau_d^{a_d-1}\exp(-\tau_d b_d)\\
+&\cdot (\sigma^2)^{-a_s-1}\exp(-b_s/\sigma^2)
+\end{aligned} $$
+
+## Full conditional - Zeitlicher Trend
+
+$$ \begin{aligned}
+p(\gamma|\cdot) &\propto \exp\left(-\frac{1}{2\sigma^2}\sum_i(y_i^*-\gamma_i-\delta_i-\beta x_i-\alpha )^2\right) \cdot \exp\left(-\frac{\tau_c}{2}\gamma^TQ_c\gamma\right)\\
+&\propto\exp\left(-\frac{1}{2\sigma^2}\sum_i(\gamma_i-\epsilon^{c}_i)^2-\frac{\tau_c}{2}\gamma^TQ_c\gamma\right)\\
+&\propto \exp\left(-\frac{1}{2}\gamma^T\frac{T}{\sigma^2}I\gamma+\frac{1}{\sigma^2}\gamma^T\epsilon_c^*-\frac{1}{2}\gamma^T\tau_cQ_c\gamma\right)\\
+&\propto \exp\left(-\frac{1}{2}\gamma^T\left(\frac{T}{\sigma^2}I+\tau_cQ_c\right)\gamma+\frac{1}{\sigma^2}\gamma^T\epsilon_c^*\right)
+\end{aligned} $$
+
+Kanonische Form der Normalverteilung mit Präzisionsmatrix $Q_c^*=\left(\frac{1}{\sigma^2}I+\tau_cQ_c\right)$ und Erwartungswert $Q_c^{*-1}m_c$ mit $m_{c,i}=\frac{1}{\sigma^2}\sum_{i}(y_i^*-\alpha-\beta x_i-\delta_i)$.
+
+## Full conditional - Saison-Effekt 
+
+Analog:
+$$
+\begin{aligned}
+\delta|\cdot &\sim N_{T}((Q_d^*)^{-1}m_d,(Q_d^*)^{-1})\\
+Q_d^* &=\left(\frac{1}{\sigma^2}I+\tau_dQ_d\right)\\
+m_{d,k}&=\frac{1}{\sigma^2}\sum_{i}(y_i^*-\alpha-\beta x_i-\gamma_i)
+\end{aligned}
+$$
+
+## Full conditional - Kovariableneffekt
+
+$$ \begin{aligned}
+p(\beta|\cdot) &\propto \exp\left(-\frac{1}{2\sigma^2}\sum_i(y_i^*-\gamma-\delta-\alpha-\beta x_i)^2\right)\\
+&\propto \exp\left(-\frac{1}{2}\beta^2\frac{1}{\sigma^2}\sum_i x_i^2 + 
+\beta \frac{1}{\sigma^2}\sum_i(x_iy_i^*-x_i\alpha-x_i\gamma_i-x_i\delta_i)\right)
+\end{aligned}$$
+
+Also $\beta|\cdot \sim N(q_b^{-1}m_b,q_b^{-1})$ mit $q_b=\frac{\sum x_i^2}{\sigma^2}$ und $m_b=\frac{1}{\sigma  2}\sum_i(x_iy_i^*-x_i\alpha-x_i\gamma_j-x_i\delta_k)$
+
+* Analog: $\alpha|\cdot \sim N(q_a^{-1}m_a,q_a^{-1})$ mit $q_a=\frac{T}{\sigma^2}$ und $m_b=\frac{1}{\sigma  2}\sum_i(y_i^*-x_i\beta-\gamma_j-\delta_k)$
+
+## Full Conditional - Präzisionsparameter**
+
+Allgemein: $p(\tau|\cdot) \propto p(\theta|\tau)p(\tau)$, also ist die Full Conditional unabhängig von den Daten
+
+Konkret:
+
+$$ \begin{aligned}
+p(\tau_c|\cdot) &\propto \tau_c^{(T-1)/2} \exp{\left(\frac{\tau_c}{2}\gamma^TQ_c\gamma\right)} \tau_c^{a_c-1}\exp(-\tau_c b_c)\\
+&\propto \tau_c^{c+(T-1)/2-1}\exp\left(-\tau_c(b_c+\gamma^T Q_c\gamma/2) \right)
+\end{aligned} $$
+
+Also 
+
+$$ \begin{aligned}
+\tau_c|\cdot &\sim Ga\left(a_c+(T-1)/2, b_c+\gamma^T Q_c\gamma/2\right)\\
+\tau_d|\cdot &\sim Ga\left(a_d+(T-m+1)/2, b_d+\delta^T Q_d\delta/2\right)\\
+\sigma_2|\cdot &\sim IG\left(a_s+T/2, b_s+\sum(y_i^*-\alpha-x_i\beta+\gamma_j-\delta_k)^2\right)
+\end{aligned}$$
+
+## Implementation {.allowframebreaks}
+
+```{r}
+y <- sqrt(Drivers$y)
+belt <- Drivers$belt
+
+a.c <- a.d <- 1
+b.c <- 0.0005
+b.d <- 0.1
+a.s <- 1/4
+b.s <- 1/4
+
+alpha <- mean(y)
+beta <- 0
+gamma <- rep(0,T)
+delta <- rep(0,T)
+tau.c <- a.c/b.c
+tau.d <- a.d/b.d
+sigma2 <- b.s/a.s
+```
+
+```{r}
+sumx2 <- sum(belt)
+burnin=1000
+nr.it=5000
+I = burnin+nr.it
+
+alpha.save<-beta.save<-sigma2.save<-rep(0,nr.it)
+gamma.save<-array(0,c(T,nr.it))
+delta.save<-array(0,c(T,nr.it))
+tau.save<-array(0,c(2,nr.it))
+iter=0
+```
+
+## MCMC 
+
+```{r}
+library(bayeskurs)
+while (iter<I)
+{
+  iter=iter+1
+  gamma<-gamma-mean(gamma);  delta<-delta-mean(delta)
+  m <- sum(y-gamma-delta-belt*gamma)/sigma2; Q <- T/sigma2
+  alpha <- rnorm(1, m/Q, 1/Q)
+  m <- sum(belt*(y-gamma-delta-alpha))/sigma2; Q <- sumx2/sigma2
+  beta <- rnorm(1, m/Q, 1/Q)
+  m <- (y-delta-beta*belt-alpha)/sigma2; Q <- tau.c*Qc + Matrix::Diagonal(T)/sigma2
+  gamma <- rmvnormcanon(m,Q)
+  m <- (y-gamma-beta*belt-alpha)/sigma2; Q <- tau.d*Qd + Matrix::Diagonal(T)/sigma2
+  delta <- rmvnormcanon(m,Q)
+  tau.c <- rgamma(1, a.c + (T-1)/2, b.c + (t(gamma)%*%Qc%*%gamma/2)[1,1])
+  tau.d <- rgamma(1, a.d + (T-12+1)/2, b.d + (t(delta)%*%Qd%*%delta/2)[1,1])
+  sigma2 <- 1/rgamma(1, a.s + T/2, b.s + sum((y-alpha-gamma-delta-beta*belt)^2))
+  
+  if (iter>burnin){alpha.save[iter-burnin]<-alpha;  beta.save[iter-burnin]<-beta
+    gamma.save[,iter-burnin]<-gamma; delta.save[,iter-burnin]<-delta
+    tau.save[,iter-burnin]<-c(tau.c,tau.d); sigma2.save[iter-burnin]<-sigma2
+  }
+}
+```
+
+## Ergebnisse {.allowframebreaks} 
+
+```{r echo=FALSE}
+plot.ts(alpha.save)
+```
+
+```{r echo=FALSE}
+plot.ts(beta.save)
+```
+
+```{r echo=FALSE}
+plot.ts(t(tau.save))
+```
+
+```{r echo=FALSE}
+plot.ts(sigma2.save)
+```
+
+```{r echo=FALSE}
+plot(density(alpha.save))
+```
+
+```{r echo=FALSE}
+plot(density(beta.save))
+```
+
+```{r echo=FALSE}
+gamma<-apply(gamma.save,1,quantile,c(.025,.5,.975))
+plot(gamma[2,],type="l",ylim=range(gamma),xlab="Jahr")
+lines(gamma[1,],lty=2)
+lines(gamma[3,],lty=2)
+```
+
+```{r echo=FALSE}
+delta<-apply(delta.save,1,quantile,c(.025,.5,.975))
+plot(delta[2,],type="l",ylim=range(delta),xlab="Monat")
+lines(delta[1,],lty=2)
+lines(delta[3,],lty=2)
+```
+
+```{r echo=FALSE}
+plot(density(tau.save[1,]))
+```
+
+```{r echo=FALSE}
+plot(density(tau.save[2,]))
+```
+
+```{r echo=FALSE}
+plot(density(sigma2.save))
+```
+
+```{r echo=FALSE}
+plot(mean(alpha)+belt*mean(beta)+gamma[2,]+delta[2,], type="l",ylim=c(27,53),ylab="sqrt(y)")
+lines(y, lty=3)
+lines(quantile(alpha,0.025)+belt*quantile(beta,0.025)+gamma[1,]+delta[1,], lty=2)
+lines(quantile(alpha,0.975)+belt*quantile(beta,0.975)+gamma[3,]+delta[3,], lty=2)
+```
+
+## BayesX  {.allowframebreaks}
+
+>BayesX is a software tool for estimating **structured additive regression** models. Structured additive regression embraces several well-known regression models such as generalized additive models (GAM), generalized additive mixed models (GAMM), generalized geoadditive mixed models (GGAMM), dynamic models, varying coefficient models, and geographically weighted regression within a unifying framework...
+
+![BayesX Logo](pics/bayesX.png)
+
+```{r}
+#install.packages(c("BayesXsrc","BayesX"), type = "source") 
+library(R2BayesX)
+#bayesx.term.options(bs = "rw1")
+formula.bx  = sqrt(y) ~ belt + 
+  sx(trend, bs="rw1", a=1, b=0.0005) + 
+  sx(seasonal, bs="season", a=1, b=0.1)
+
+system.time(
+  mcmc.bx <- bayesx(formula = formula.bx, data=Drivers, 
+      control=bayesx.control(family="gaussian",
+      method="MCMC", hyp.prior = c(4,4), 
+      iterations=10000L, burnin=5000L))
+)
+
+plot(mcmc.bx$effects$`sx(trend)`)
+plot(mcmc.bx$effects$`sx(seasonal)`)
+summary(mcmc.bx)
+```
+
+# Empirischer Bayes
+## Andere Ansätze
+
+* Schön hier: Gibbs-Sampler, da wir semi-konjugierte Prioris verwenden
+* Aber noch einfacher: wenn wir $\tau$ kennen würden, wäre $\theta|\cdot\sim N(.)$ und wir könnten Schlüsse analytisch ziehen  
+* Analogie zum penalisierten Likelihod-Ansatz:
+
+$$ \begin{aligned}
+\log(p(\theta|x))&=\log(f(x|\theta))+\log(p(\theta))+C\\
+&=l(\theta)+\frac{\tau}{2}\theta^TQ\theta+C=l_{pen}(\theta)+C
+\end{aligned}$$
+
+## Empirischer Bayes-Ansatz
+
+* Beim empirischen Bayes-Ansatz wird keine Priori-Information für die Hyperparameter spezifiziert
+* Die Hyperparameter werden aus den Daten geschätzt
+* Kein Bayesianisches Verfahren im eigentlichen Sinn
+* Verschiedene Methoden möglich
+
+## Expectation-Maximization-Algorithmus
+
+Im obigen Beispiel wäre folgender Algorithmus sinnvoll, um den Maximum-A-Posteriori-Schätzer zu berechnen:
+
+1. Schätze $\theta$ aus $y$ bei gegebenen $\tau$ 
+2. Schätze $\tau$ als inverse Varianz aus $\theta$ 
+* Iteriere bis zur Konvergenz
+
+* Empirischer Bayes-Ansatz würde nach weniger Iterationen abbrechen (z.B. $1. \to 2. \to 1.$)
+
+## Restringierter ML-Schätzer (REML)
+
+* Grundidee des REML: Transformiere Daten, so dass nuisance Parameter in der Likelihood nicht mehr auftauchen
+* Hier: $y\sim N(X\theta,\sigma^2 I)$
+* Transformation z.B. $A=I-X(X^TX)^{-1}X^T$:
+
+$$ \begin{aligned}
+E(Ay)&=E((I-X(X^TX)^{-1}X^T)y)\\
+&=X\theta-X(X^TX)^{-1}X^TX\theta=0\\
+Var(Ay)&=(I-X(X^TX)^{-1}X^T)^T (\sigma^2I) (I-X(X^TX)^{-1}X^T)\\
+&=\sigma^2(I-2(X(X^TX)^{-1}X^T)\\
+&+X(X^TX)^{-1}X^TX(X^TX)^{-1}X^T)\\
+&=\sigma^2(I-X(X^TX)^{-1}X^T)\\
+\end{aligned}$$
+
+* Schätze $\tau$ aus $p(\tau|Ay)$, hängt nicht mehr von $\theta$ ab
+* Setze Schätzung in ursprüngliche Posteriori ein: $p(\theta|y,\hat{\tau})$
+
+## BayesX mit REML {.allowframebreaks}
+
+```{r}
+
+# Keine Hyperparameter (!)
+formula.bx2 = sqrt(y) ~ belt + sx(trend, bs="rw1") + 
+  sx(seasonal, bs="season")
+
+reml.bx <- bayesx(formula = formula.bx2, data=Drivers, 
+              control=bayesx.control(family="gaussian",
+              method="REML"))
+
+plot(reml.bx$effects$`sx(trend)`)
+plot(reml.bx$effects$`sx(seasonal)`)
+summary(reml.bx)
+```
+
+## Model Averaging
+
+* Uns interessiert eigentlich die marginale Posterioriverteilung von $\theta$. Für diese gilt:
+$$
+p(\theta|y)=\int p(\theta,\tau|y) d\tau = \int p(\theta|\tau,y)p(\tau|y) d\tau
+$$
+
+* Im Gegensatz zum Empirischen Bayes-Ansatz erhalten wir beim vollen Bayes-Ansatz also nicht das Ergebnis für einen $\tau$-Wert, sondern die Mischung von verschiedenen Modellen, gewichtet mit der marginalen Posteriori-Verteilung von $\tau$.
+* Man spricht vom *Model Averaging*
+
+# Integreated Nested Laplace Approximation
+
+## Integrated Nested Laplace Approximation (INLA) {.allowframebreaks}
+
+$$
+p(\tau|y) = \frac{p(\theta,\tau|y)}{p(\theta|\tau,y)}
+$$
+
+* Zähler ist bekannt bis auf Normierungskonstante, Zähler ist Dichte der Normalverteilung.
+* Für jeden gegebenen Wert von $\tau$ kann Posteriori-Modus $\theta^*(\tau)$ leicht berechnet werden
+* Benutze Laplace-Approximation:
+
+$$
+\tilde{p}(\tau|y) = \left.\frac{p(\theta,\tau|y)}{p(\theta|\tau,y)}\right|_{\theta=\theta^*(\tau)}
+$$
+
+## INLA-Algorithmus:
+
+* Schätze Modus von $\tau|y$
+* Berechne $\tilde{p}(\tau|y)$ an geschickt gewählten Stützpunken um den Modus (berücksichtige Hessematrix)
+* Interpolation von $\tilde{p}(\tau|y)$ zwischen den Stützpunkten
+* Schliesslich numerische Integration:
+
+$$ 
+\tilde{p}(\theta|y)=\sum_\tau p(\theta|\tau,y)\tilde{p}(\tau|y)
+$$
+
+## R-INLA
+
+```{r}
+#install.packages("INLA", repos="https://inla.r-inla-download.org/R/stable")
+library(INLA)
+formula  = sqrt(y) ~ belt + f(trend, model="rw1", 
+  param=c(a.c,b.c)) + f(seasonal, model="seasonal", 
+  season.length=12, param=c(a.d,b.d))
+inla.mod <- inla(formula, family="gaussian", 
+  data=Drivers, control.family=list(param=c(a.s,b.s)))
+plot(inla.mod)
+summary(inla.mod)
+```
+
+Besser wäre vielleicht RW2:
+
+```{r}
+formula2  = sqrt(y) ~ belt + f(trend, model="rw2",
+  param=c(a.c,b.c)) + f(seasonal, model="seasonal", 
+  season.length=12, param=c(a.d,b.d))
+mod2 = inla(formula, family="gaussian", data=Drivers,
+           control.family=list(param=c(a.s,b.s)))
+plot(mod2)
+```
+
+# Hierarchische Bayes-Modelle
+## Allgemeiner (oder "Generalisiert"") 
+
+Allgemein gilt für hierarchische Modelle:
+  
+  $$ \begin{aligned}
+p(\theta|y)
+&= \int p(\theta|\tau, y) p(\tau| y) \; d\tau\\
+&= \int \frac{p(y|\theta) p(\theta|\tau)}{p(y|\tau)} p(\tau|y) \; d \tau
+\end{aligned}$$
+  
+  $$
+  p(\tau|y) = \int p(\tau|\theta) p(\theta|y) \; d\theta
+$$
+
+## Beispiel: Modell mit zufälligen Effekten 
+  
+Daten:
+  
+* Todesfälle nach Herzoperationen bei Babies
+* Beobachtungen von 12 Krankenhäusern
+* Annahme: Todesrate ist Krankenhausspezifisch
+* Individuelle Raten der Krankenhäuser kommen aus gemeinamer Verteilung
+
+## Daten
+
+```{r surg daten, message=FALSE}
+library(INLA); data(Surg)
+plot(Surg$r/Surg$n, pch='X', ylab='Rate', xlab='Krankenhaus')
+```
+
+## Hierarchisches Modell {.allowframebreaks}
+
+* Datenmodell: Sei $y_i$ die Anzahl der Todesfälle bei $n_i$ Operationen in Krankenhau $i=1,\ldots,p=12$;
+
+$$
+\begin{aligned}
+y_i &\sim B(n_i, \pi_i); i=1,\ldots,p\\
+\pi_i &= \frac{exp(\theta_i)}{1-\exp(\theta_i)}
+\end{aligned}
+$$
+
+* Priori-Modell
+
+$$ \begin{aligned}
+\theta_i|\tau & \sim N\left(\mu,\tau^{-1}\right)
+\theta & \sim N_p\left(\mu,(\tau I)^{-1})\right)
+\end{aligned}
+$$
+
+* Hyper-Priori: Wie oben $\tau Ga(a,b)$, $a=b=1/1000$.
+
+## Posteriori und Full Conditionals
+
+* Unterschied zu oben: Likelihood ist nicht mehr normal
+* Full Conditional von $\theta$ ist *fast* normal
+* Full Conditional von $\tau$ ist aber unverändert
+
+* Likelihood pro Krankenhaus:
+  
+$$ \begin{aligned}
+f(y_i|\theta_i) &\propto \pi^{y_i}(1-\pi)^{n_i-y_i}\\
+& \propto \exp(\theta_i)^{y_i}(1-\exp(\theta))^{-y_i}(1-\exp(\theta))^{-n_i+y_i}\\
+& \propto \exp(y_i\theta_i)(1-\exp(\theta))^{n_i}
+\end{aligned} 
+$$
+
+## Approximation der Full Conditionals {.allowframebreaks}
+
+Full Conditional:
+  
+$$ \begin{aligned}
+p(\theta|\tau,y)&\propto \prod_i \exp(y_i\theta_i)(1-\exp(\theta))^{n_i} \exp(-\frac{\tau}{2}((\theta-\mu)^T(\theta-\mu)))\\
+&\propto \exp\sum_i\left(y_i\theta_i-\frac{\tau}{2}\theta_i^2+\tau(\theta_i-\mu)+n_i\log(1-\exp(\theta_i))\right)
+\end{aligned}$$
+  
+Sei 
+
+$$ \begin{aligned}
+f(\theta)&:=\log(1-\exp(\theta))\\
+f(\theta)'&=\frac{-\exp(\theta)}{(1-\exp(\theta))}\\
+f(\theta)''&=\frac{-\exp(\theta)(1-\exp(\theta))-(-\exp(\theta))(-\exp(\theta))}{(1-exp(\theta))^2}\\
+&=\frac{-\exp(\theta)}{(1-\exp(\theta))^2}
+\end{aligned}$$
+
+Taylor-Approximation:
+
+$$ \begin{aligned}
+f(\theta_i)&\approx f(\theta^0_i)-(\theta_i-\theta^0_i)f'(\theta_i^0)+\frac{1}{2}(\theta_i-\theta^0_i)^2 f''(\theta^0_i)\\
+&= \theta_i\left(f'(\theta^0_i)-\theta^0_if''(\theta^0_i)\right)
+                 +\frac{1}{2}\theta_i^2f''(\theta^0_i)+const.
+\end{aligned} $$
+                 
+Damit Approximation der Posteriori:
+                 
+$$ \begin{aligned}
+                 \tilde{p}(\theta|\tau,y) &\propto \exp\left(y_i\theta_i-\frac{\tau}{2}(\theta^T\theta)+\tau\mu\theta\right.+\\
+                 &\left.+n_i\left(\theta_i\left(f'(\theta^0_i)-\theta^0_if''(\theta^0_i)\right)
++\frac{1}{2}\theta_i^2f''(\theta^0_i)\right)\right)\\
+\tilde{p}(\theta_i|\tau,y) &\propto\exp\left(\theta_i(\mu+y_i+n_if'(\theta^0_i)-n_i\theta^0_if''(\theta^0_i))\right.\\
+                                                       & -\left.\frac{1}{2}\theta^2_i(\tau+f''(\theta^0_i))
+                                                       \right)
+                                                       \end{aligned}
+$$
+                                                       
+## Anwendung der Approximation {.allowframebreaks}
+                                                       
+* Bei **Markov Chain Monte Carlo**
+                                                       
+1. benutze $\tilde{p}(\theta^{(k-1)})$ als Proposal, wobei $\theta^{(k-1)}$ der aktuelle Wert ist
+2. benutze $\tilde{p}(\theta^*$ als Proposal, wobei $\theta^*$ (approximativ) der Modus von $p(\theta|\tau^{(k-1)})$ ist (IWLS-Proposal)
+                                                       
+> BayesX hat bei Kombination MCMC, Binomial und Zufälliger Effekt (random effect, re) einen bekannten Bug.
+
+```{r}
+library(R2BayesX)
+SurgBx <- data.frame(y=as.factor(c(rep(1,sum(Surg$r)),
+   rep(0,sum(Surg$n-Surg$r)))), hospital=c(
+    rep(Surg$hospital,Surg$r),rep(Surg$hospital,
+                                    (Surg$n-Surg$r))))
+b <- bayesx(y ~ sx(hospital, bs = "re"),
+    data = SurgBx, family = "binomial", method = "REML")
+summary(b)
+plot(b$effects$`sx(hospital):re`$Estimate,ylab="theta")
+```
+                                                       
+* Bei **Integrated Nested Laplace Approximation**
+                                                       
+$$
+                                                       \tilde{p}(\tau|y) = \left.\frac{p(\theta,\tau|y)}{\tilde{p}(\theta|\tau,y)}\right|_{\theta=\theta^*(\tau)}
+$$
+                                                       
+                                                       
+$$ 
+                                                       \tilde{p}(\theta|y)=\sum_\tau \tilde{p}(\theta|\tau,y)\tilde{p}(\tau|y)
+$$
+                                                       
+INLA-Paket kennt drei verschiedene Approximationen (Gauss, Laplace, vereinfachter Laplace), die z.T. auch Schiefe berücksichtigen können.
+                   
+```{r}
+formula = r ~ f(hospital, model="iid",
+                param=c(0.001,0.001))
+mod.surg = inla(formula, data=Surg, 
+                family="binomial", Ntrials=n)
+```
+
+```{r}
+plot(mod.surg)
+plot(mod.surg$summary.random$hospital$mean)
+```
+
+```{r}
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+```{r}
+stanmodel = "
+data {
+    int<lower=0> n;
+    int<lower=0> H;
+    int<lower=0> hospital[n];
+    int<lower=0> y[n];
+    real<lower=0> a;
+    real<lower=0> b;
+}
+parameters {
+    vector[H] theta;
+    real mu;
+    real<lower=0> tau;
+}
+model {
+    for (i in 1:n) 
+      y[i] ~ bernoulli_logit(theta[hospital[i]]);
+    for (i in 1:H) 
+      theta[i] ~ normal(mu, sqrt(1/tau));
+    tau ~ gamma(a,b);
+}"
+```
+```{r stan binomial, message=FALSE, warning=FALSE}
+a=0.001
+b=0.001
+standata <- list(hospital=SurgBx$hospital,
+    y=SurgBx$y, n=length(SurgBx$y), H=12, a=a, b=b)
+stan1 <- stan(model_code = stanmodel, 
+    model_name = "Binomial",data = standata, 
+    iter = 2000, warmup = 1000)
+```
+```{r}
+plot(stan1)
+```
+
+# Vergleich der Methoden
+                                                       
+## Besprochene Methoden {.allowframebreaks}
+
+* MCMC selbst implementieren
+  * Offensichtlich aufwendig 
+  * Kleine Tricks (z.B. log-Akzeptanzwahrscheinlichkeit)
+  * Besser in z.B. C, C++
+  * Vorteil: Kann beliebig verändert werden
+
+* STAN / HMC
+  * (Scheint ziemlich) universell einsetzbar
+  * Genauer Samplingalgorithmus schwer nachzuvollziehen (Fehler?)
+  * Eventuell kryptische Fehlermeldungen
+  * Je nach Modell sehr langsam oder sehr schnell
+
+* BayesX / REML und MCMC
+  * Nur für bestimmte Modelle (Stukturiert additive Regression, STAR)
+  * MCMC und REML, letzteres sehr schnell
+  * R-Anbindung (noch) nicht gut, Standalone Software benutzen
+
+* INLA
+  * Nur für STAR-Modelle, darin aber sehr flexibel
+  * Kein MCMC, aber i.d.R. sehr gute Approximation 
+  * Dokumentation in R z.T. noch nicht fertig
+                                                       
+## Alterativen
+* OpenBUGS (WinBUGS)
+  * Klassiker (WinBUGS)
+  * Generelles MCMC Sampling ähnlich STAN
+  * Verschiedene, nicht ganz ausgereifte R-Anbindungen, dazu coda
+  * In der WinBUGS-Variante sehr gute Visualisierung
+  * JAGS: Neu geschriebene Alternative
+
+* LaplacesDemon (R)
+* MCMCpack (R)
+* mcmc (R)
+* ... (siehe Bayesian Task View in R)
+* PyMC (Python)
+* emcee (Python)
+* Mamba (julia)
+                                                       

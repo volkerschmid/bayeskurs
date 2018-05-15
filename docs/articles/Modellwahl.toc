@@ -1,0 +1,4 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{Bayes-Faktor}{3}{0}{1}
+\beamer@sectionintoc {2}{Devianz-Informationskriterium (DIC)}{15}{0}{2}
+\beamer@subsectionintoc {2}{2}{DIC}{17}{0}{2}

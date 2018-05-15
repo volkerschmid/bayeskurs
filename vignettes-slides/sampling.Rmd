@@ -1,0 +1,267 @@
+---
+title: "Simulationsbasierte Posteriori-Inferenz"
+author: "Volker Schmid"
+date: "Mai 2017"
+output:
+  beamer_presentation:
+    keep_tex: false
+    toc: true
+    slide_level: 2
+vignette: >
+  %\VignetteIndexEntry{Simulationsbasierte Posteriori-Inferenz}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE) 
+```
+
+# Einführung 
+
+## Zielsetzung 
+
+Für komplexere Modelle ist die Posteriori of nicht mehr analytisch zugänglich. Insbesondere ist die Normalisierungskonstante, d.h., die marginale Likelihood \[ p(x)=\int f(x|\theta)p(\theta)d\theta \] schwer zu berechnen. Auswege:
+
+* Numerische Integration 
+* Approximation der Posteriori 
+* Simulationsverfahren
+
+## Simulationsbasierte Posteriori-Inferenz Idee: 
+
+Erzeuge Ziehungen aus der Posteriori-Verteilung und approximiere daraus Statistiken der Posteriori-Verteilung
+
+* Posteriori-Erwartungswert durch den Mittelwert 
+* Posteriori-Median über Median der Stichprobe 
+* Quantile der Posteriori-Verteilung über Quantile der Stichprobe
+* HPD-Intervalle als kürzeste Intervalle, die $100(1-\alpha)\%$ der Stichprobe enthalten
+
+# Monte-Carlo-Integration 
+
+## Definition 
+
+Sei $f(x)>0$ eine beliebige stetige
+Funktion mit bekanntem Wertebereich $[0,Y]$. $\int_a^b f(x) dx$ kann wie dann
+folgt approximiert werden. 
+
+* Ziehe $n$ gleichverteilte
+Zufallszahlen $x$ aus $[a,b]$ 
+* Ziehe unabhängig davon $n$ gleichverteilte
+Zufallszahlen $y$ aus $[0,Y]$ 
+* Berechne den Anteil $h$ der Punkte
+$(x_i,y_i)$, die unterhalb der Funktion $f$ liegen 
+* $\int_a^b f(x) dx \approx h(b-a)Y$ 
+
+## Beispiel 
+
+\includegraphics[scale=.4]{pics/mc-int.png}
+
+## Monte-Carlo-Schätzer {.allowframebreaks} 
+
+Ist $p(x)$ eine Dichte, so können Integrale der Form\[ E(g(x))=\int g(x)p(x) dx \] mit einer Stichprobe $x_1,\ldots,x_m$ aus $p(x)$ durch den Stichprobenmittelwert 
+
+\[ 
+\bar{g}_m=\frac{1}{m}\sum_{i=1}^mg\left(x_i\right) \]
+
+approximiert werden. Aus dem starken Gesetz der grossen Zahlen folgt 
+
+\[ \lim \frac{1}{m} \sum_{i=1}^m
+g(x_i)\to \int g(x)p(x)dx. \]
+
+Die Varianz des Monte-Carlo-Schätzers $\bar{g}_m$ ist gegeben durch 
+
+\[ 
+Var(\bar{g}_m)=\frac{1}{m}\int\left(g(X)-E(g(x))\right)^2
+p(x)dx=\frac{1}{m}Var(g). \] 
+
+Der Approximationsfehler verringert sich mit
+steigendem $m$. Es folgt sogar aus dem zentralen Grenzwertsatz 
+
+\[ 
+\sqrt{m}\left(g_m-E(g(x))\right)\sim N(0,Var(g)). \]
+
+Schätzer für
+$Var(\bar{g}_m)$ ist
+
+\[ \widehat{Var(\bar{g}_m)}=\frac{1}{m-1}\sum_{i=1}^m 
+\left(g(x_i)-\bar{g}_m\right)^2 \]
+
+# Ziehen von Zufallsvariablen 
+
+## Inversionsmethode
+
+Gegeben sei die Verteilungsfunktion $F(x)$ einer Zufallsvariablen $X$. Sei
+$u\sim U[0,1]$. Dann ist \[ Y = F^{-1}(u) = \inf\{y:F(y)\geq u\} \sim X \]
+
+## Acception-Rejection-Methode 
+
+Ziel: Wir wollen aus einer Dichtefunktion $f(x)$ ziehen. Gegeben sei eine Dichtefunktion $g(x)$, nach der wir problemlos Zufallszahlen ziehen können. Es existiere ein $c$, so dass 
+\[ cg(z)\geq f(z) \] 
+für alle $z$ mit $f(z)>0$. Dann können Zufallszahlen gemäß $f(x)$ wie folgt gezogen werden: 
+
+\begin{itemize} 
+\item ziehe $Z$ gemäß $g(z)$ 
+\item akzeptiere
+$Z$ mit Wahrscheinlichkeit $\frac{f(z)}{g(z)c}$ \end{itemize} 
+
+* Wähle $c$ möglichst klein
+* Kann auch angewandt werden, falls die
+Normalisierungskonstante von $f(x)$ nicht bekannt
+
+## Squezed Acception-Rejection-Sampling 
+
+Gegeben sei eine untere Schranke $s(z)\leq f(z)$. Für $u$ Ziehung aus $U[0,1]$ akzeptiere $Z$ 
+
+\begin{itemize} 
+\item wenn $u\leq \frac{s(z)}{cg(z)}$ 
+\item wenn $u\leq \frac{f(z)}{cg(z)}$ 
+\end{itemize} 
+
+Der zweite Schritt kann ausgelassen werden, wenn bereits im ersten Schritt akzeptiert wurde.
+
+
+# Markov Chain Monte Carlo ## Markov Chain Monte Carlo
+
+* Ziel: Ziehungen aus der Posterioriverteilung 
+* Simulationsbasierte Inferenz 
+* Funktioniert für komplexe und hochdimensionale Probleme 
+* Idee: Erzeuge eine Markovkette, deren stationäre Verteilung die Posterioriverteilung ist 
+* Ziehungen sind voneinander abhängig
+
+## Markov Chain Monte-Carlo-Methoden 
+
+Mit der Übergangsmatrix $\mathbf{P}$ einer
+irreduziblen, aperiodischen Markovkette, deren stationäre Verteilung $\mathbf{\pi}$ ist, können Zufallszahlen $Y \sim \pi$ wie folgt erzeugt werden: 
+
+\begin{itemize}
+\item Wahl eines beliebigen Startwerts $y^{(0)}$ 
+\item Simulation der Realisierungen einer Markovkette der Länge $m$ mit Übergangsmatrix $\mathbf{P}$:
+$(y^{(1)},\ldots,y^{(m)})$ 
+\end{itemize} 
+
+Ab einem gewissen Index $b$, dem \textit{burn-in} geht der Einfluss der Startverteilung verloren und es gilt approximativ 
+
+\[ y^{(t)}\sim \pi, \text{ für } i=b,\ldots,m. \] 
+
+Die Ziehungen sind identisch verteilt, aber nicht unabhängig.
+
+## Gibbs-Sampling 
+
+Beim Gibbs-Sampling zieht man abwechselnd aus den Full Conditional Posteriors (vollständig bedingte Posterioriverteilung) der einzelnen Parameter(blöcke).
+
+## Beispiel Gibbs-Sampling {.allowframebreaks}
+
+Modell: $$x_i \sim N(\mu, \sigma^2)$$ 
+
+Likelihood: $$p(\mathbf{x}|\mu,\sigma^2) =
+\left( \frac{1}{2\pi\sigma^2}\right)^{n/2} \exp\left(-\frac{1}{\sigma^2}\sum
+(x_i-\mu)^2\right)$$ 
+
+Semi-konjugierte Prioris: 
+
+\begin{eqnarray*} 
+\mu &\sim& N(m_0,s_0)\\ 
+\tau=\sigma^{-2} &\sim& Ga(a,b)\\ 
+\mu &\perp &\tau 
+\end{eqnarray*} 
+
+Posteriori-Verteilung: 
+
+\begin{eqnarray*} 
+p(\mu,\tau|\mathbf{x}) &\propto& \tau^{n/2} \exp\left(-\frac{\tau}{2}\sum (x_i-\mu)^2\right) \\ &\cdot& \exp\left(-\frac{1}{2s_0}(\mu-m_0)^2\right) \tau^a \exp(-b\tau) 
+\end{eqnarray*}
+
+Full conditional von $\mu$: 
+\[ p(\mu,|\mathbf{x},\tau) \propto 
+\exp\left(-\frac{\tau}{2}\sum (x_i-\mu)^2-\frac{1}{2s_0}(\mu-m_0)^2\right) \] 
+
+Es
+handelt sich um den Kern der N$(s^{-1}m,s^{-1})$-Verteilung mit $m=\tau\sum
+x_i+m_0/s_0$ und $s=n\tau+s_0^{-1}$.
+
+Full conditional von $\tau$: 
+
+\[ p(\tau|\mathbf{x},\mu) \propto \tau^{a+n/2} 
+exp\left(-(b+0.5\sum(x_i-\mu)^2)\right) \] 
+
+Es handelt sich um den Kern der
+Ga$(a+n/2,b+0.5\sum(x_i-\mu)^2)$-Verteilung.
+
+Gibbs-Sampler:
+
+1. Wähle Startwert $\tau_0$ 
+2. Ziehe $\mu \sim N(s^{-1}m,s^{-1})$ 
+3. Ziehe $\tau \sim Ga(a+n/2,b+0.5\sum(x_i-\mu)^2)$ 
+4. Iteriere 2 und 3 für $m=1,\ldots,M$
+
+## Metropolis-Hastings-Algorithmus 
+
+\begin{itemize} 
+\item Ziehe $\theta^*$ aus einer Vorschlagsverteilung (Proposal) mit Dichte $q(\theta|\theta^{(k-1)})$ 
+\item Akzeptiere $\theta^*$ wird mit Wahrscheinlichkeit 
+\[ 
+\alpha=\min\left(1,\frac{p(\theta^*|x)q(\theta^{(k-1)}|\theta^*)}{p(\theta^{(k-1)}|x)q(\theta^*|\theta^{(k-1)})}\right)
+\]
+\item Andernfalls setze $\theta^{(k)}=\theta^{(k-1)}.$ \end{itemize}
+
+## Vorschlagsdichten (Proposal-Dichten) 
+
+\begin{itemize} 
+\item Independence Proposal: Vorschlagsverteilung ist unabhängig vom aktuellen Wert 
+\item
+Symetrisches Proposal:
+$q(\theta^*|\theta^{(k-1)})=q(\theta^{(k-1)}|\theta^*)$, 
+die Vorschlagsdichte kürzt sich aus der Akzeptanzwahrscheinlichkeit (Metropolis-Algorithmus): 
+
+\[ \alpha=\frac{p(\theta^*|x)}{p(\theta^{k-1}|x)} \]
+Jeder Vorschlag mit $p(\theta^*|x)>p(\theta^{k-1}|x)$ wird angenommen! 
+\item Random Walk Proposal: Vorschlagsverteilung ist ein Random Walk \[ \theta^* =
+\theta^{(k-1)}+\epsilon, \epsilon\sim f \] also
+$q(\theta^*|\theta^{(k-1)})=f(\theta^*-\theta^{(k-1)})$. 
+\end{itemize}
+
+## Random Walk-Proposal
+
+Random Walk wird in der Regel mit Normalverteilung konstruiert: 
+\[ \theta^* \sim N(\theta^{(k-1)},C) \] 
+mit vorgegebener Kovarianzmatrix $C$. 
+
+\begin{itemize} 
+\item Eine zu kleine Varianz führt zu hohen Akzeptanzraten, aber ineffizienten,
+da stark autokorrelierten Ziehungen. Im Extremfall $C\to 0$ führt zu $\alpha =
+1$, $\tau \to \infty$. 
+\item Eine zu große Varianz führt zu zu großen Schritten,
+Vorschläge liegen in den Enden der Posterioriverteilung, sehr kleine
+Akzeptanzraten. 
+\item Tuning der Kovarianzmatrix notwendig \end{itemize}
+
+## MH-Algorithmus für Multivariate Verteilungen
+
+\begin{itemize} 
+\item Metropolis-Hastings-Algorithmus kann für gesamten
+$\theta$-Vektor durchgeführt werden 
+\item Akzeptanzraten jedoch i.d.R. geringer
+mit höherer Dimension 
+\item Alternative ist der komponentenweise
+Metropolis-Hastings: Jede Komponente des Parameters wird einzeln (skalar oder
+blockweise) aufdatiert. Sei $\theta=(\theta_1,\theta_2)$: 
+
+\[ 
+\alpha=\min\left(1,\frac{p(\theta_1^*|x,\theta_2^{(k-1)})q(\theta^{(k-1)}_1|\theta^*,\theta_2^{(k-1)})}{p(\theta^{(k-1)}_1|x,\theta_2^{(k-1)})q(\theta^*_1|\theta^{(k-1)},\theta_2^{(k-1)})}\right)
+\] 
+
+\item Updates können in fester oder zufälliger Weise erfolgen 
+\end{itemize}
+
+## Metropolis-Within-Gibbs-Sampling
+
+* In der Regel zieht man bei MCMC abwechselnd aus den Parameter(blöcken) 
+* Kennt
+man die Full Conditional-Verteilung, zieht man den Parameter(block) mittels
+eines Gibbs-Schritts 
+* Kennt man die Full Conditional nur bis auf Konstanten,
+zieht man den Parameter(block) mittels eines Metopolis-Hastings-Schritts 
+*
+Zusammen *Metropolis-Within-Gibbs-Sampling* genannt 
+* Auch hier ist die
+Reihenfolge der Ziehungen theoretisch irrelevant, praktisch aber insbesondere
+für die ersten Ziehungen wichtig
