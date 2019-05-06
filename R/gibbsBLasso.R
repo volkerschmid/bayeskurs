@@ -58,7 +58,7 @@ gibbsBLasso = function(x, y, max.steps = 100000) {
     betaSamples[k,] <- beta
     
     # sample sigma2
-    shape <- (n+p-1)/2
+    shape <- (n+m-1)/2
     residue <- drop(y - x %*% beta)
     scale <- (t(residue) %*% residue + t(beta) %*% invD %*% beta)/2
     sigma2 <- 1/rgamma(1, shape, 1/scale)

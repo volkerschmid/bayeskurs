@@ -3,13 +3,13 @@ title: "Hierarchische Modelle"
 author: "Volker Schmid"
 date: "19./26. Juni 2017"
 output:
+  ioslides_presentation: default
   beamer_presentation:
-    keep_tex: false
-    toc: true
+    keep_tex: no
     slide_level: 2
-vignette: >
-  %\VignetteIndexEntry{Hierarchische Modelle mit MCMC, Empirischem Bayes und INLA}
-  %\VignetteEngine{knitr::rmarkdown}
+    toc: yes
+vignette: |
+  %\VignetteIndexEntry{Hierarchische Modelle mit MCMC, Empirischem Bayes und INLA} %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
