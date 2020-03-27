@@ -1,8 +1,8 @@
 Package: bayeskurs
 Type: Package
 Title: Bayes-Kurs
-Version: 0.3.2
-Date: 2017-12-13
+Version: 0.3.3
+Date: 2020-03-27
 Author: Volker Schmid
 Authors@R: c(person("Volker", "Schmid", role = c("aut", "cre"),
 		     email = "volker.schmid@lmu.de"))
@@ -15,5 +15,5 @@ Suggests: knitr, rmarkdown, bayesmix, R2BayesX, rstan, INLA, tictoc, mlbench, sp
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Imports: Matrix, VGAM,  coda, miscTools, mnormt
-Additional_repositories: http://www.math.ntnu.no/inla/R/stable
+Additional_repositories: https://inla.r-inla-download.org/R/stable
 
